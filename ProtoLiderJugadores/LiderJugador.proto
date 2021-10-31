@@ -5,14 +5,11 @@ option go_package = "https://github.com/DonCrastiv/INF-343/ProtoLiderJugadores";
 
 /*PARTICIPAR DEL JUEGO*/
 message Solicitud {
-    string nombre = 1;
-    bool participa = 2;
+    bool participa = 1;
 }
 
 message RespuestaSolicitud {
-    string nombre = 1;
-    bool participa = 2;
-    int32 id = 3;
+    int32 idJugador = 1;
 }
 
 /*INFOMAR ETAPAS*/
