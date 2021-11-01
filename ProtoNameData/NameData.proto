@@ -25,5 +25,6 @@ message RespuestaRegistro {
 }
 
 service NameDataService {
-    rpc RegistrarJugadas () returns (Response);
+    rpc RegistrarJugadas (Jugadas) returns (RespuestaJugadas);
+    rpc SolicitarRegistro (SolicitudRegistro) returns (RespuestaRegistro);
 }
