@@ -1,11 +1,11 @@
 syntax = "proto3";
 package grpc;
 
-option go_package = "https://github.com/DonCrastiv/INF-343/ProtoLiderName";
+option go_package = "https://github.com/DonCrastiv/INF-343/ProtoNameData";
 import "ProtoLiderJugadores/LiderJugador.proto"; 
 /*ARREGLAR ESTE IMPORT Y DESPUES COMPILAR PARA GENERAR .go Y .grpc.go*/
 
-/*ENVIAR JUGADAS*/
+/*REGISTRAR JUGADAS*/
 message Jugadas {
     repeated Jugada jugadas = 1;
 }
@@ -24,7 +24,6 @@ message RespuestaRegistro {
     repeated Jugada jugadas = 1;
 }
 
-service LiderNameService {
-    rpc EnviarJugadas (Jugadas) returns (RespuestaJugadas);
-    rpc SolicitarRegistro (SolicitudRegistro) returns (RespuestaRegistro);
+service NameDataService {
+    rpc RegistrarJugadas () returns (Response);
 }
