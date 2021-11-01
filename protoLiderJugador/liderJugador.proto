@@ -1,7 +1,7 @@
 syntax = "proto3";
 package grpc;
 
-option go_package = "https://github.com/DonCrastiv/INF-343/ProtoLiderJugadores";
+option go_package = "https://github.com/DonCrastiv/INF-343/protoLiderJugador";
 
 /*PARTICIPAR DEL JUEGO*/
 message Solicitud {
