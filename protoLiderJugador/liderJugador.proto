@@ -41,7 +41,7 @@ message RespuestaJugada {
     string afirmacion = 1;
 }
 
-service Jugador{
+service Jugador {
     rpc IngresarSolicitud (Solicitud) returns (RespuestaSolicitud);
     rpc InformarEtapas (Etapa) returns (RespuestaEtapa);
     rpc EnviarJugadas (Jugada) returns (RespuestaJugada);

@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.26.0
 // 	protoc        v3.19.1
-// source: LiderJugador.proto
+// source: liderJugador.proto
 
-package ProtoLiderJugadores
+package protoLiderJugador
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -26,14 +26,13 @@ type Solicitud struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Nombre    string `protobuf:"bytes,1,opt,name=nombre,proto3" json:"nombre,omitempty"`
-	Participa bool   `protobuf:"varint,2,opt,name=participa,proto3" json:"participa,omitempty"`
+	Participa bool `protobuf:"varint,1,opt,name=participa,proto3" json:"participa,omitempty"`
 }
 
 func (x *Solicitud) Reset() {
 	*x = Solicitud{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[0]
+		mi := &file_liderJugador_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -46,7 +45,7 @@ func (x *Solicitud) String() string {
 func (*Solicitud) ProtoMessage() {}
 
 func (x *Solicitud) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[0]
+	mi := &file_liderJugador_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,14 +58,7 @@ func (x *Solicitud) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Solicitud.ProtoReflect.Descriptor instead.
 func (*Solicitud) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Solicitud) GetNombre() string {
-	if x != nil {
-		return x.Nombre
-	}
-	return ""
+	return file_liderJugador_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Solicitud) GetParticipa() bool {
@@ -81,15 +73,13 @@ type RespuestaSolicitud struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Nombre    string `protobuf:"bytes,1,opt,name=nombre,proto3" json:"nombre,omitempty"`
-	Participa bool   `protobuf:"varint,2,opt,name=participa,proto3" json:"participa,omitempty"`
-	Id        int32  `protobuf:"varint,3,opt,name=id,proto3" json:"id,omitempty"`
+	IdJugador int32 `protobuf:"varint,1,opt,name=idJugador,proto3" json:"idJugador,omitempty"`
 }
 
 func (x *RespuestaSolicitud) Reset() {
 	*x = RespuestaSolicitud{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[1]
+		mi := &file_liderJugador_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -102,7 +92,7 @@ func (x *RespuestaSolicitud) String() string {
 func (*RespuestaSolicitud) ProtoMessage() {}
 
 func (x *RespuestaSolicitud) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[1]
+	mi := &file_liderJugador_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -115,26 +105,12 @@ func (x *RespuestaSolicitud) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespuestaSolicitud.ProtoReflect.Descriptor instead.
 func (*RespuestaSolicitud) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{1}
+	return file_liderJugador_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RespuestaSolicitud) GetNombre() string {
+func (x *RespuestaSolicitud) GetIdJugador() int32 {
 	if x != nil {
-		return x.Nombre
-	}
-	return ""
-}
-
-func (x *RespuestaSolicitud) GetParticipa() bool {
-	if x != nil {
-		return x.Participa
-	}
-	return false
-}
-
-func (x *RespuestaSolicitud) GetId() int32 {
-	if x != nil {
-		return x.Id
+		return x.IdJugador
 	}
 	return 0
 }
@@ -151,7 +127,7 @@ type Etapa struct {
 func (x *Etapa) Reset() {
 	*x = Etapa{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[2]
+		mi := &file_liderJugador_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -164,7 +140,7 @@ func (x *Etapa) String() string {
 func (*Etapa) ProtoMessage() {}
 
 func (x *Etapa) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[2]
+	mi := &file_liderJugador_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,7 +153,7 @@ func (x *Etapa) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Etapa.ProtoReflect.Descriptor instead.
 func (*Etapa) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{2}
+	return file_liderJugador_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Etapa) GetNumEtapa() int32 {
@@ -198,7 +174,7 @@ type RespuestaEtapa struct {
 func (x *RespuestaEtapa) Reset() {
 	*x = RespuestaEtapa{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[3]
+		mi := &file_liderJugador_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -211,7 +187,7 @@ func (x *RespuestaEtapa) String() string {
 func (*RespuestaEtapa) ProtoMessage() {}
 
 func (x *RespuestaEtapa) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[3]
+	mi := &file_liderJugador_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -224,7 +200,7 @@ func (x *RespuestaEtapa) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespuestaEtapa.ProtoReflect.Descriptor instead.
 func (*RespuestaEtapa) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{3}
+	return file_liderJugador_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *RespuestaEtapa) GetAfirmacion() string {
@@ -247,7 +223,7 @@ type Estado struct {
 func (x *Estado) Reset() {
 	*x = Estado{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[4]
+		mi := &file_liderJugador_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -260,7 +236,7 @@ func (x *Estado) String() string {
 func (*Estado) ProtoMessage() {}
 
 func (x *Estado) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[4]
+	mi := &file_liderJugador_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -273,7 +249,7 @@ func (x *Estado) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Estado.ProtoReflect.Descriptor instead.
 func (*Estado) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{4}
+	return file_liderJugador_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Estado) GetEstado() string {
@@ -301,7 +277,7 @@ type RespuestaEstado struct {
 func (x *RespuestaEstado) Reset() {
 	*x = RespuestaEstado{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[5]
+		mi := &file_liderJugador_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -314,7 +290,7 @@ func (x *RespuestaEstado) String() string {
 func (*RespuestaEstado) ProtoMessage() {}
 
 func (x *RespuestaEstado) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[5]
+	mi := &file_liderJugador_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -327,7 +303,7 @@ func (x *RespuestaEstado) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespuestaEstado.ProtoReflect.Descriptor instead.
 func (*RespuestaEstado) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{5}
+	return file_liderJugador_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *RespuestaEstado) GetAfirmacion() string {
@@ -350,7 +326,7 @@ type Jugada struct {
 func (x *Jugada) Reset() {
 	*x = Jugada{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[6]
+		mi := &file_liderJugador_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -363,7 +339,7 @@ func (x *Jugada) String() string {
 func (*Jugada) ProtoMessage() {}
 
 func (x *Jugada) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[6]
+	mi := &file_liderJugador_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -376,7 +352,7 @@ func (x *Jugada) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Jugada.ProtoReflect.Descriptor instead.
 func (*Jugada) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{6}
+	return file_liderJugador_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Jugada) GetJugada() int32 {
@@ -404,7 +380,7 @@ type RespuestaJugada struct {
 func (x *RespuestaJugada) Reset() {
 	*x = RespuestaJugada{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_LiderJugador_proto_msgTypes[7]
+		mi := &file_liderJugador_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -417,7 +393,7 @@ func (x *RespuestaJugada) String() string {
 func (*RespuestaJugada) ProtoMessage() {}
 
 func (x *RespuestaJugada) ProtoReflect() protoreflect.Message {
-	mi := &file_LiderJugador_proto_msgTypes[7]
+	mi := &file_liderJugador_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -430,7 +406,7 @@ func (x *RespuestaJugada) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespuestaJugada.ProtoReflect.Descriptor instead.
 func (*RespuestaJugada) Descriptor() ([]byte, []int) {
-	return file_LiderJugador_proto_rawDescGZIP(), []int{7}
+	return file_liderJugador_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *RespuestaJugada) GetAfirmacion() string {
@@ -440,21 +416,17 @@ func (x *RespuestaJugada) GetAfirmacion() string {
 	return ""
 }
 
-var File_LiderJugador_proto protoreflect.FileDescriptor
+var File_liderJugador_proto protoreflect.FileDescriptor
 
-var file_LiderJugador_proto_rawDesc = []byte{
-	0x0a, 0x12, 0x4c, 0x69, 0x64, 0x65, 0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x67, 0x72, 0x70, 0x63, 0x22, 0x41, 0x0a, 0x09, 0x53, 0x6f,
-	0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x6f, 0x6d, 0x62, 0x72,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x12,
-	0x1c, 0x0a, 0x09, 0x70, 0x61, 0x72, 0x74, 0x69, 0x63, 0x69, 0x70, 0x61, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x09, 0x70, 0x61, 0x72, 0x74, 0x69, 0x63, 0x69, 0x70, 0x61, 0x22, 0x5a, 0x0a,
-	0x12, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x53, 0x6f, 0x6c, 0x69, 0x63, 0x69,
-	0x74, 0x75, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x70,
-	0x61, 0x72, 0x74, 0x69, 0x63, 0x69, 0x70, 0x61, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09,
-	0x70, 0x61, 0x72, 0x74, 0x69, 0x63, 0x69, 0x70, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x22, 0x23, 0x0a, 0x05, 0x45, 0x74, 0x61,
+var file_liderJugador_proto_rawDesc = []byte{
+	0x0a, 0x12, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x67, 0x72, 0x70, 0x63, 0x22, 0x29, 0x0a, 0x09, 0x53, 0x6f,
+	0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x61, 0x72, 0x74, 0x69,
+	0x63, 0x69, 0x70, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x70, 0x61, 0x72, 0x74,
+	0x69, 0x63, 0x69, 0x70, 0x61, 0x22, 0x32, 0x0a, 0x12, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73,
+	0x74, 0x61, 0x53, 0x6f, 0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x69,
+	0x64, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09,
+	0x69, 0x64, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x22, 0x23, 0x0a, 0x05, 0x45, 0x74, 0x61,
 	0x70, 0x61, 0x12, 0x1a, 0x0a, 0x08, 0x6e, 0x75, 0x6d, 0x45, 0x74, 0x61, 0x70, 0x61, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x6e, 0x75, 0x6d, 0x45, 0x74, 0x61, 0x70, 0x61, 0x22, 0x30,
 	0x0a, 0x0e, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x45, 0x74, 0x61, 0x70, 0x61,
@@ -472,43 +444,42 @@ var file_LiderJugador_proto_rawDesc = []byte{
 	0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x22, 0x31, 0x0a, 0x0f, 0x52, 0x65, 0x73, 0x70, 0x75,
 	0x65, 0x73, 0x74, 0x61, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x61, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x66,
 	0x69, 0x72, 0x6d, 0x61, 0x63, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
-	0x61, 0x66, 0x69, 0x72, 0x6d, 0x61, 0x63, 0x69, 0x6f, 0x6e, 0x32, 0xf5, 0x01, 0x0a, 0x13, 0x4c,
-	0x69, 0x64, 0x65, 0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x12, 0x3e, 0x0a, 0x11, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x73, 0x61, 0x72, 0x53, 0x6f,
-	0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x12, 0x0f, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x53,
-	0x6f, 0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x1a, 0x18, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e,
-	0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x53, 0x6f, 0x6c, 0x69, 0x63, 0x69, 0x74,
-	0x75, 0x64, 0x12, 0x33, 0x0a, 0x0e, 0x49, 0x6e, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x72, 0x45, 0x74,
-	0x61, 0x70, 0x61, 0x73, 0x12, 0x0b, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x45, 0x74, 0x61, 0x70,
-	0x61, 0x1a, 0x14, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73,
-	0x74, 0x61, 0x45, 0x74, 0x61, 0x70, 0x61, 0x12, 0x34, 0x0a, 0x0d, 0x45, 0x6e, 0x76, 0x69, 0x61,
-	0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x61, 0x73, 0x12, 0x0c, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e,
-	0x4a, 0x75, 0x67, 0x61, 0x64, 0x61, 0x1a, 0x15, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x52, 0x65,
-	0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x61, 0x12, 0x33, 0x0a,
-	0x0c, 0x45, 0x6e, 0x76, 0x69, 0x61, 0x72, 0x45, 0x73, 0x74, 0x61, 0x64, 0x6f, 0x12, 0x0c, 0x2e,
-	0x67, 0x72, 0x70, 0x63, 0x2e, 0x45, 0x73, 0x74, 0x61, 0x64, 0x6f, 0x1a, 0x15, 0x2e, 0x67, 0x72,
-	0x70, 0x63, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x45, 0x73, 0x74, 0x61,
-	0x64, 0x6f, 0x42, 0x3b, 0x5a, 0x39, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3a, 0x2f, 0x2f, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x44, 0x6f, 0x6e, 0x43, 0x72, 0x61, 0x73,
-	0x74, 0x69, 0x76, 0x2f, 0x49, 0x4e, 0x46, 0x2d, 0x33, 0x34, 0x33, 0x2f, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x4c, 0x69, 0x64, 0x65, 0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x65, 0x73, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x66, 0x69, 0x72, 0x6d, 0x61, 0x63, 0x69, 0x6f, 0x6e, 0x32, 0xe9, 0x01, 0x0a, 0x07, 0x4a,
+	0x75, 0x67, 0x61, 0x64, 0x6f, 0x72, 0x12, 0x3e, 0x0a, 0x11, 0x49, 0x6e, 0x67, 0x72, 0x65, 0x73,
+	0x61, 0x72, 0x53, 0x6f, 0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x12, 0x0f, 0x2e, 0x67, 0x72,
+	0x70, 0x63, 0x2e, 0x53, 0x6f, 0x6c, 0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x1a, 0x18, 0x2e, 0x67,
+	0x72, 0x70, 0x63, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x53, 0x6f, 0x6c,
+	0x69, 0x63, 0x69, 0x74, 0x75, 0x64, 0x12, 0x33, 0x0a, 0x0e, 0x49, 0x6e, 0x66, 0x6f, 0x72, 0x6d,
+	0x61, 0x72, 0x45, 0x74, 0x61, 0x70, 0x61, 0x73, 0x12, 0x0b, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e,
+	0x45, 0x74, 0x61, 0x70, 0x61, 0x1a, 0x14, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x52, 0x65, 0x73,
+	0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x45, 0x74, 0x61, 0x70, 0x61, 0x12, 0x34, 0x0a, 0x0d, 0x45,
+	0x6e, 0x76, 0x69, 0x61, 0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x61, 0x73, 0x12, 0x0c, 0x2e, 0x67,
+	0x72, 0x70, 0x63, 0x2e, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x61, 0x1a, 0x15, 0x2e, 0x67, 0x72, 0x70,
+	0x63, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61, 0x4a, 0x75, 0x67, 0x61, 0x64,
+	0x61, 0x12, 0x33, 0x0a, 0x0c, 0x45, 0x6e, 0x76, 0x69, 0x61, 0x72, 0x45, 0x73, 0x74, 0x61, 0x64,
+	0x6f, 0x12, 0x0c, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x45, 0x73, 0x74, 0x61, 0x64, 0x6f, 0x1a,
+	0x15, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x75, 0x65, 0x73, 0x74, 0x61,
+	0x45, 0x73, 0x74, 0x61, 0x64, 0x6f, 0x42, 0x39, 0x5a, 0x37, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3a,
+	0x2f, 0x2f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x44, 0x6f, 0x6e,
+	0x43, 0x72, 0x61, 0x73, 0x74, 0x69, 0x76, 0x2f, 0x49, 0x4e, 0x46, 0x2d, 0x33, 0x34, 0x33, 0x2f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x4c, 0x69, 0x64, 0x65, 0x72, 0x4a, 0x75, 0x67, 0x61, 0x64, 0x6f,
+	0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_LiderJugador_proto_rawDescOnce sync.Once
-	file_LiderJugador_proto_rawDescData = file_LiderJugador_proto_rawDesc
+	file_liderJugador_proto_rawDescOnce sync.Once
+	file_liderJugador_proto_rawDescData = file_liderJugador_proto_rawDesc
 )
 
-func file_LiderJugador_proto_rawDescGZIP() []byte {
-	file_LiderJugador_proto_rawDescOnce.Do(func() {
-		file_LiderJugador_proto_rawDescData = protoimpl.X.CompressGZIP(file_LiderJugador_proto_rawDescData)
+func file_liderJugador_proto_rawDescGZIP() []byte {
+	file_liderJugador_proto_rawDescOnce.Do(func() {
+		file_liderJugador_proto_rawDescData = protoimpl.X.CompressGZIP(file_liderJugador_proto_rawDescData)
 	})
-	return file_LiderJugador_proto_rawDescData
+	return file_liderJugador_proto_rawDescData
 }
 
-var file_LiderJugador_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_LiderJugador_proto_goTypes = []interface{}{
+var file_liderJugador_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_liderJugador_proto_goTypes = []interface{}{
 	(*Solicitud)(nil),          // 0: grpc.Solicitud
 	(*RespuestaSolicitud)(nil), // 1: grpc.RespuestaSolicitud
 	(*Etapa)(nil),              // 2: grpc.Etapa
@@ -518,15 +489,15 @@ var file_LiderJugador_proto_goTypes = []interface{}{
 	(*Jugada)(nil),             // 6: grpc.Jugada
 	(*RespuestaJugada)(nil),    // 7: grpc.RespuestaJugada
 }
-var file_LiderJugador_proto_depIdxs = []int32{
-	0, // 0: grpc.LiderJugadorService.IngresarSolicitud:input_type -> grpc.Solicitud
-	2, // 1: grpc.LiderJugadorService.InformarEtapas:input_type -> grpc.Etapa
-	6, // 2: grpc.LiderJugadorService.EnviarJugadas:input_type -> grpc.Jugada
-	4, // 3: grpc.LiderJugadorService.EnviarEstado:input_type -> grpc.Estado
-	1, // 4: grpc.LiderJugadorService.IngresarSolicitud:output_type -> grpc.RespuestaSolicitud
-	3, // 5: grpc.LiderJugadorService.InformarEtapas:output_type -> grpc.RespuestaEtapa
-	7, // 6: grpc.LiderJugadorService.EnviarJugadas:output_type -> grpc.RespuestaJugada
-	5, // 7: grpc.LiderJugadorService.EnviarEstado:output_type -> grpc.RespuestaEstado
+var file_liderJugador_proto_depIdxs = []int32{
+	0, // 0: grpc.Jugador.IngresarSolicitud:input_type -> grpc.Solicitud
+	2, // 1: grpc.Jugador.InformarEtapas:input_type -> grpc.Etapa
+	6, // 2: grpc.Jugador.EnviarJugadas:input_type -> grpc.Jugada
+	4, // 3: grpc.Jugador.EnviarEstado:input_type -> grpc.Estado
+	1, // 4: grpc.Jugador.IngresarSolicitud:output_type -> grpc.RespuestaSolicitud
+	3, // 5: grpc.Jugador.InformarEtapas:output_type -> grpc.RespuestaEtapa
+	7, // 6: grpc.Jugador.EnviarJugadas:output_type -> grpc.RespuestaJugada
+	5, // 7: grpc.Jugador.EnviarEstado:output_type -> grpc.RespuestaEstado
 	4, // [4:8] is the sub-list for method output_type
 	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -534,13 +505,13 @@ var file_LiderJugador_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_LiderJugador_proto_init() }
-func file_LiderJugador_proto_init() {
-	if File_LiderJugador_proto != nil {
+func init() { file_liderJugador_proto_init() }
+func file_liderJugador_proto_init() {
+	if File_liderJugador_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_LiderJugador_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Solicitud); i {
 			case 0:
 				return &v.state
@@ -552,7 +523,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespuestaSolicitud); i {
 			case 0:
 				return &v.state
@@ -564,7 +535,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Etapa); i {
 			case 0:
 				return &v.state
@@ -576,7 +547,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespuestaEtapa); i {
 			case 0:
 				return &v.state
@@ -588,7 +559,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Estado); i {
 			case 0:
 				return &v.state
@@ -600,7 +571,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespuestaEstado); i {
 			case 0:
 				return &v.state
@@ -612,7 +583,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Jugada); i {
 			case 0:
 				return &v.state
@@ -624,7 +595,7 @@ func file_LiderJugador_proto_init() {
 				return nil
 			}
 		}
-		file_LiderJugador_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_liderJugador_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespuestaJugada); i {
 			case 0:
 				return &v.state
@@ -641,18 +612,18 @@ func file_LiderJugador_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_LiderJugador_proto_rawDesc,
+			RawDescriptor: file_liderJugador_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_LiderJugador_proto_goTypes,
-		DependencyIndexes: file_LiderJugador_proto_depIdxs,
-		MessageInfos:      file_LiderJugador_proto_msgTypes,
+		GoTypes:           file_liderJugador_proto_goTypes,
+		DependencyIndexes: file_liderJugador_proto_depIdxs,
+		MessageInfos:      file_liderJugador_proto_msgTypes,
 	}.Build()
-	File_LiderJugador_proto = out.File
-	file_LiderJugador_proto_rawDesc = nil
-	file_LiderJugador_proto_goTypes = nil
-	file_LiderJugador_proto_depIdxs = nil
+	File_liderJugador_proto = out.File
+	file_liderJugador_proto_rawDesc = nil
+	file_liderJugador_proto_goTypes = nil
+	file_liderJugador_proto_depIdxs = nil
 }
