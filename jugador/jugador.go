@@ -1,7 +1,6 @@
 package main
 
-import (  
-    "fmt"
+import (
 	//"math/rand"
 	"time"
 	
@@ -20,14 +19,13 @@ type Jugador struct {
     Id int
 }
 
-func (j Jugador) Mostrar() {
-	fmt.Printf("Jugador %d\n", j.Id)
-
+func main() {
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
+	
 	c := pb.NewJugadorClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
