@@ -17,7 +17,7 @@ message Jugada {
 }
 
 message RespuestaJugada {
-    string estado = 1;
+    bool eliminado = 1;
     int32 etapa = 2;
 }
 
