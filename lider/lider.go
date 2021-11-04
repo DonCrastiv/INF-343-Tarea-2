@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net"
+	"fmt"
 
 	pb "inf343-tarea-2/protoLiderJugador"
 
@@ -19,10 +20,22 @@ type server struct {
 }
 
 var jugadorId int32 = 0
+var jugadores []int32
+
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
 	log.Printf("Received")
 	jugadorId++
-	return &pb.RespuestaSolicitud{IdJugador: jugadorId}, nil
+	jugadores = append(jugadores, int32(jugadorId))
+	fmt.Printf("%v", jugadores)
+	return &pb.RespuestaSolicitud{Etapa: int32(1)}, nil
+}
+
+func (s *server) EnviarJugadas(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
+
+	
+
+
+
 }
 
 func main() {
