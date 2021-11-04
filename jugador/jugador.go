@@ -3,11 +3,12 @@ package main
 import (
 	//"math/rand"
 	"time"
-	
+
 	"context"
 	"log"
 
 	pb "inf343-tarea-2/protoLiderJugador"
+
 	"google.golang.org/grpc"
 )
 
@@ -16,7 +17,7 @@ const (
 )
 
 type Jugador struct {
-    Id int
+	Id int
 }
 
 func main() {
@@ -25,12 +26,12 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	
+
 	c := pb.NewJugadorClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.IngresarSolicitud(ctx, &pb.Solicitud{Participa: true})
+	r, err := c.IngresarSolicitud(ctx, &pb.Solicitud{})
 	if err != nil {
 		log.Fatalf("could not create user: %v", err)
 	}

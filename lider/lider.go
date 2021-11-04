@@ -20,7 +20,7 @@ type server struct {
 
 var jugadorId int32 = 0
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
-	log.Printf("Received: %v", in.GetParticipa())
+	log.Printf("Received")
 	jugadorId++
 	return &pb.RespuestaSolicitud{IdJugador: jugadorId}, nil
 }
@@ -30,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	
+
 	s := server{}
 	grcpServer := grpc.NewServer()
 
