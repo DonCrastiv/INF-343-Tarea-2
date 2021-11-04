@@ -23,5 +23,5 @@ message RespuestaJugada {
 
 service Jugador {
     rpc IngresarSolicitud (Solicitud) returns (RespuestaSolicitud);
-    rpc EnviarJugadas (Jugada) returns (RespuestaJugada);
+    rpc EnviarJugada (Jugada) returns (RespuestaJugada);
 }

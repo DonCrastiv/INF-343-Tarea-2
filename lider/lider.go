@@ -30,10 +30,7 @@ func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.R
 	return &pb.RespuestaSolicitud{Etapa: int32(1)}, nil
 }
 
-func (s *server) EnviarJugadas(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
-
-	
-
+func (s *server) EnviarJugada(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
 
 
 }

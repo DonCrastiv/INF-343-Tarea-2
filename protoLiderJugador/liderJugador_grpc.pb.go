@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JugadorClient interface {
 	IngresarSolicitud(ctx context.Context, in *Solicitud, opts ...grpc.CallOption) (*RespuestaSolicitud, error)
-	EnviarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error)
+	EnviarJugada(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error)
 }
 
 type jugadorClient struct {
@@ -39,9 +39,9 @@ func (c *jugadorClient) IngresarSolicitud(ctx context.Context, in *Solicitud, op
 	return out, nil
 }
 
-func (c *jugadorClient) EnviarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error) {
+func (c *jugadorClient) EnviarJugada(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error) {
 	out := new(RespuestaJugada)
-	err := c.cc.Invoke(ctx, "/grpc.Jugador/EnviarJugadas", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.Jugador/EnviarJugada", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *jugadorClient) EnviarJugadas(ctx context.Context, in *Jugada, opts ...g
 // for forward compatibility
 type JugadorServer interface {
 	IngresarSolicitud(context.Context, *Solicitud) (*RespuestaSolicitud, error)
-	EnviarJugadas(context.Context, *Jugada) (*RespuestaJugada, error)
+	EnviarJugada(context.Context, *Jugada) (*RespuestaJugada, error)
 	mustEmbedUnimplementedJugadorServer()
 }
 
@@ -64,8 +64,8 @@ type UnimplementedJugadorServer struct {
 func (UnimplementedJugadorServer) IngresarSolicitud(context.Context, *Solicitud) (*RespuestaSolicitud, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IngresarSolicitud not implemented")
 }
-func (UnimplementedJugadorServer) EnviarJugadas(context.Context, *Jugada) (*RespuestaJugada, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EnviarJugadas not implemented")
+func (UnimplementedJugadorServer) EnviarJugada(context.Context, *Jugada) (*RespuestaJugada, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnviarJugada not implemented")
 }
 func (UnimplementedJugadorServer) mustEmbedUnimplementedJugadorServer() {}
 
@@ -98,20 +98,20 @@ func _Jugador_IngresarSolicitud_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Jugador_EnviarJugadas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Jugador_EnviarJugada_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Jugada)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(JugadorServer).EnviarJugadas(ctx, in)
+		return srv.(JugadorServer).EnviarJugada(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/grpc.Jugador/EnviarJugadas",
+		FullMethod: "/grpc.Jugador/EnviarJugada",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JugadorServer).EnviarJugadas(ctx, req.(*Jugada))
+		return srv.(JugadorServer).EnviarJugada(ctx, req.(*Jugada))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,8 +128,8 @@ var Jugador_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Jugador_IngresarSolicitud_Handler,
 		},
 		{
-			MethodName: "EnviarJugadas",
-			Handler:    _Jugador_EnviarJugadas_Handler,
+			MethodName: "EnviarJugada",
+			Handler:    _Jugador_EnviarJugada_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
