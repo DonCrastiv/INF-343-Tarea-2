@@ -33,6 +33,7 @@ func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.R
 func (s *server) EnviarJugada(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
 
 
+	return nil, nil
 }
 
 func main() {
