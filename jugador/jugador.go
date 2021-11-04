@@ -2,6 +2,7 @@ package main
 
 import (
 	//"math/rand"
+	"math/rand"
 	"time"
 
 	"context"
@@ -31,21 +32,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
 	}
+
 	etapa := rS.GetEtapa()
 	elim := false
 	var rJ *pb.RespuestaJugada
 	var jugada int32
-	for elim == false {
+	for !elim {
 		switch etapa {
 		case 1:
-			jugada = 1
+			jugada = rand.Int31n(10) + 1
 		case 2:
-			jugada = 1
+			jugada = rand.Int31n(4) + 1
 		case 3:
-			jugada = 1
+			jugada = rand.Int31n(10) + 1
 		}
 		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada})
-		etapa = rJ.GetEtapa()
+		if err != nil {
+			log.Fatalf("Hubo un error con el envío o proceso de la jugada: %v", err)
+		}
 		elim = rJ.GetEliminado()
+		etapa = rJ.GetEtapa()
+		log.Printf("%t %d", elim, etapa)
 	}
 }
