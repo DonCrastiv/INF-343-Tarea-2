@@ -21,7 +21,7 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
-	log.Printf("Received: %v", in.GetParticipa())
+	log.Printf("Received")
 	return &pb.RespuestaSolicitud{IdJugador: 2}, nil
 }
 
@@ -30,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	
+
 	s := server{}
 	grcpServer := grpc.NewServer()
 
