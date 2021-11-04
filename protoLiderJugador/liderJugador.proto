@@ -5,7 +5,6 @@ option go_package = "https://github.com/DonCrastiv/INF-343/ProtoLiderJugadores";
 
 /*PARTICIPAR DEL JUEGO*/
 message Solicitud {
-    bool participa = 1;
 }
 
 message RespuestaSolicitud {
