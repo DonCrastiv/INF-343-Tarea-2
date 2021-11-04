@@ -14,15 +14,15 @@ const (
 	port = ":50051"
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedJugadorServer
 }
 
-// SayHello implements helloworld.GreeterServer
+var jugadorId int32 = 0
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
 	log.Printf("Received: %v", in.GetParticipa())
-	return &pb.RespuestaSolicitud{IdJugador: 2}, nil
+	jugadorId++
+	return &pb.RespuestaSolicitud{IdJugador: jugadorId}, nil
 }
 
 func main() {
