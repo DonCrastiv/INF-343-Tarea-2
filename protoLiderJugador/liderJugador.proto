@@ -17,11 +17,11 @@ message Jugada {
 }
 
 message RespuestaJugada {
-    string estado = 1;
+    bool eliminado = 1;
     int32 etapa = 2;
 }
 
 service Jugador {
     rpc IngresarSolicitud (Solicitud) returns (RespuestaSolicitud);
-    rpc EnviarJugadas (Jugada) returns (RespuestaJugada);
+    rpc EnviarJugada (Jugada) returns (RespuestaJugada);
 }
