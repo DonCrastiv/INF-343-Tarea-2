@@ -2,6 +2,7 @@ package main
 
 import (
 	//"math/rand"
+	"math/rand"
 	"time"
 
 	"context"
@@ -16,14 +17,10 @@ const (
 	address = "localhost:50051"
 )
 
-type Jugador struct {
-	Id int
-}
-
 func main() {
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalf("No se pudo conectar: %v", err)
 	}
 	defer conn.Close()
 
@@ -31,9 +28,30 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.IngresarSolicitud(ctx, &pb.Solicitud{})
+	rS, err := c.IngresarSolicitud(ctx, &pb.Solicitud{})
 	if err != nil {
-		log.Fatalf("could not create user: %v", err)
+		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
 	}
-	log.Printf("%d", r.GetIdJugador())
+
+	etapa := rS.GetEtapa()
+	elim := false
+	var rJ *pb.RespuestaJugada
+	var jugada int32
+	for !elim {
+		switch etapa {
+		case 1:
+			jugada = rand.Int31n(10) + 1
+		case 2:
+			jugada = rand.Int31n(4) + 1
+		case 3:
+			jugada = rand.Int31n(10) + 1
+		}
+		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada})
+		if err != nil {
+			log.Fatalf("Hubo un error con el envío o proceso de la jugada: %v", err)
+		}
+		elim = rJ.GetEliminado()
+		etapa = rJ.GetEtapa()
+		log.Printf("%t %d", elim, etapa)
+	}
 }

@@ -4,7 +4,7 @@
 // 	protoc        v3.19.1
 // source: liderJugador.proto
 
-package ProtoLiderJugadores
+package protoLiderJugadores
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

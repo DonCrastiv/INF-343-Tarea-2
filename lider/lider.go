@@ -23,7 +23,6 @@ var jugadorId int32 = 0
 var jugadores []int32
 
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
-	log.Printf("Received")
 	jugadorId++
 	jugadores = append(jugadores, int32(jugadorId))
 	fmt.Printf("%v", jugadores)
@@ -31,9 +30,14 @@ func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.R
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
+<<<<<<< HEAD
 
 
 	return nil, nil
+=======
+	log.Println("pito")
+	return &pb.RespuestaJugada{Eliminado: true, Etapa: 5}, nil
+>>>>>>> bce453007ebfb1cfc9d2a186712441e15d8307c1
 }
 
 func main() {
