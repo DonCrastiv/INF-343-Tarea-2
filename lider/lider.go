@@ -45,9 +45,7 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 	return &pbJugador.RespuestaUnirse{Etapa: 1}, nil
 }
 
-func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error){
-
-
+func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error) {
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
@@ -61,7 +59,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	c := pbName.NewLiderNameServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: ipToId[direccion], Jugada: in.Jugada, Etapa: int32(1)})
+	r, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: ipToId[direccion], Jugada: in.Jugada, Etapa: 1})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud entre Lider-NameNode: %v", err)
 	}
@@ -70,8 +68,8 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	var suma int32 = 0
 	miJugada := rand.Int31n(5) + 6
 	for _, v := range jugadas {  
-			suma += v  
-		}
+		suma += v  
+	}
 	eliminado := jugadas[cantidad-1] >= miJugada
 	
 	var etapa int32 = 1
