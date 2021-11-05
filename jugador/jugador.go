@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"os"
 	"time"
 
 	"context"
@@ -49,16 +50,15 @@ func main() {
 			jugada = rand.Int31n(4) + 1
 		case 3:
 			jugada = rand.Int31n(10) + 1
+		case 4:
+			os.Exit(0)
 		}
-		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada, Etapa: etapa})
+		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada, Etapa: 3})//etapa})
 		if err != nil {
 			log.Fatalf("Hubo un error con el envío o proceso de la jugada: %v", err)
 		}
 		elim = rJ.GetEliminado()
 		etapa = rJ.GetEtapa()
 		log.Printf("Eliminado: %t, Etapa: %d", elim, etapa)
-		if etapa == 2 {
-			elim = true
-		}
 	}
 }
