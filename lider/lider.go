@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"time"
 	"math/rand"
 	"net"
 
@@ -24,12 +23,28 @@ type server struct {
 }
 
 var jugadorId int32 = 0
-var jugadores []int32
-var solicitudes map[int32]bool
-var pasaDeEtapa map[int32]bool
+var etapaActual int32 = 1
+var eliminados []bool
+var jugoLaRonda []bool
+var pasaDeEtapa []bool
 var jugadaLider int32
 var ipToId = make(map[net.Addr]int32)
 
+func RemoveIndex(s []int32, index int) []int32 {
+	return append(s[:index], s[index+1:]...)
+}
+
+func Etapa1 (ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error){
+	return nil, nil
+}
+
+func Etapa2 (ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error){
+	return nil, nil
+}
+
+func Etapa3 (ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error){
+	return nil, nil
+}
 
 func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pbJugador.RespuestaUnirse, error) {
 	p, _ := peer.FromContext(ctx)
@@ -39,7 +54,7 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 	
 	jugadorId++
 	ipToId[p.Addr] = jugadorId
-	jugadores = append(jugadores, jugadorId)
+	//jugadores = append(jugadores, jugadorId) BORRAR SI NO USAMOS JUGADORES
 	if jugadorId == 16 {
 		log.Println("Comienza la ETAPA 1")
 	}
@@ -51,8 +66,8 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	// Si esta se trata de la primera jugada de la ronda,
 	// entonces el líder eligirá un número.
 	v := false
-	for _, value := range solicitudes {
-		v = v || value
+	for _, value := range jugoLaRonda {
+		v = v || value //ojo
 	}
 	if !v {
 		jugadaLider = rand.Int31n(5) + 6
@@ -60,7 +75,9 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	}
 	// Aquí marcamos que el jugador ha enviado su jugada.
 	p, _ := peer.FromContext(ctx)
-	solicitudes[ipToId[p.Addr]] = true
+	jugoLaRonda[ipToId[p.Addr] - 1] = true
+
+
 	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -69,9 +86,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	defer conn.Close()
 	
 	c := pbName.NewLiderNameServiceClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	r, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: ipToId[p.Addr], Jugada: in.Jugada, Etapa: 1})
+	r, err := c.EnviarJugadas(context.Background(), &pbName.Jugada{IdJugador: ipToId[p.Addr], Jugada: in.Jugada, Etapa: 1})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud entre Lider-NameNode: %v", err)
 	}
@@ -87,19 +102,21 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	eliminado := jugadas[cantidad-1] >= jugadaLider
 	
 	var etapa int32 = 1
-	if suma >= 21 {
+	if suma >= 21 {	
+		etapa = int32(2)
 		pasaDeEtapa[ipToId[p.Addr]] = true
 	} else if cantidad == 4 {
 		eliminado = true
 	}
 	if (eliminado) {
+		eliminados[ipToId[p.Addr] - 1] = false
 		log.Printf("Jugador %d Eliminado", ipToId[p.Addr])
 	}
 	
 	// Se esperará hasta que todos los jugadores hayan enviado
 	// su jugada para poder avanzar a la siguiente ronda.
-	toLook := solicitudes
-	if pasaDeEtapa[ipToId[p.Addr]] {
+	toLook := jugoLaRonda
+	if pasaDeEtapa[ipToId[p.Addr] - 1] {
 		toLook = pasaDeEtapa
 	}
 	for v := false; !v; {
@@ -107,16 +124,18 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 			v = v && value
 		}
 	}
-	if pasaDeEtapa[ipToId[p.Addr]] {
-		pasaDeEtapa[ipToId[p.Addr]] = false
+	if pasaDeEtapa[ipToId[p.Addr] - 1] {
+		pasaDeEtapa[ipToId[p.Addr] - 1] = false
 	}
-	solicitudes[ipToId[p.Addr]] = false
+	jugoLaRonda[ipToId[p.Addr] - 1] = false
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 }
 
 func main() {
 	for cont := 0; cont < 16; cont++ {
-		solicitudes[int32(cont)] = false
+		jugoLaRonda = append(jugoLaRonda, false)
+		jugoLaRonda = append(pasaDeEtapa, false)
+		jugoLaRonda = append(eliminados, false)
 	}
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
