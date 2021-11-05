@@ -27,7 +27,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	rS, err := c.IngresarSolicitud(ctx, &pb.Solicitud{})
+	rS, err := c.SolicitarUnirse(ctx, &pb.Unirse{})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
 	}
