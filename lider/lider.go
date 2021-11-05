@@ -23,13 +23,15 @@ type server struct {
 
 var jugadorId int32 = 0
 var jugadores []int32
-var ipToid = make(map[net.Addr]int32)
+var ipToId = make(map[net.Addr]int32)
 
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
 	jugadorId++
-	jugadores = append(jugadores, int32(jugadorId))
+	jugadores = append(jugadores, jugadorId)
 	fmt.Printf("%v", jugadores)
-	return &pb.RespuestaSolicitud{Etapa: int32(1)}, nil
+	p, _ := peer.FromContext(ctx)
+	ipToId[p.Addr] = jugadorId 
+	return &pb.RespuestaSolicitud{Etapa: 1}, nil
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
@@ -39,12 +41,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pb.Jugada) (*pb.Respuesta
 		log.Fatalf("No se pudo conectar: %v", err)
 	}
 	defer conn.Close()
-	
-	p, _ := peer.FromContext(ctx)
-	direccion := p.Addr
-
-
-	
+	return nil, nil
 }
 
 func main() {
