@@ -53,7 +53,7 @@ func main() {
 		case 4:
 			os.Exit(0)
 		}
-		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada, Etapa: 3})//etapa})
+		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada, Etapa: etapa})
 		if err != nil {
 			log.Fatalf("Hubo un error con el envío o proceso de la jugada: %v", err)
 		}
