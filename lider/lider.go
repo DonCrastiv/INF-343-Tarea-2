@@ -9,9 +9,11 @@ import (
 	pb "inf343-tarea-2/protoLiderJugador"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/peer"
 )
 
 const (
+	address = "localhost:50052"
 	port = ":50051"
 )
 
@@ -21,6 +23,7 @@ type server struct {
 
 var jugadorId int32 = 0
 var jugadores []int32
+var ipToid = make(map[net.Addr]int32)
 
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
 	jugadorId++
@@ -30,14 +33,18 @@ func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.R
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error){
-<<<<<<< HEAD
+
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("No se pudo conectar: %v", err)
+	}
+	defer conn.Close()
+	
+	p, _ := peer.FromContext(ctx)
+	direccion := p.Addr
 
 
-	return nil, nil
-=======
-	log.Println("pito")
-	return &pb.RespuestaJugada{Eliminado: true, Etapa: 5}, nil
->>>>>>> bce453007ebfb1cfc9d2a186712441e15d8307c1
+	
 }
 
 func main() {

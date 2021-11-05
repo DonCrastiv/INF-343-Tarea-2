@@ -1,0 +1,21 @@
+syntax = "proto3";
+package grpc;
+
+option go_package = "https://github.com/DonCrastiv/INF-343/protoLiderName";
+
+
+/*ENVIAR JUGADAS*/
+message Jugada{
+    int32 idJugador = 1;
+    int32 jugada = 2;
+    int32 etapa = 3;
+}
+
+message RespuestaJugadas {
+    repeated int32 jugadas = 1;
+    int32 cantidad = 2;
+}
+
+service LiderNameService {
+    rpc EnviarJugadas (Jugada) returns (RespuestaJugadas);
+}
