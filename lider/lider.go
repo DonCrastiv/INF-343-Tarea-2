@@ -25,7 +25,9 @@ type server struct {
 
 var jugadorId int32 = 0
 var jugadores []int32
+var solicitudes map[int32]bool
 var ipToId = make(map[net.Addr]int32)
+
 
 func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pbJugador.RespuestaUnirse, error) {
 	p, _ := peer.FromContext(ctx)
@@ -34,13 +36,17 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 	}
 	
 	jugadorId++
-	ipToId[p.Addr] = jugadorId 
+	ipToId[p.Addr] = jugadorId
 	jugadores = append(jugadores, jugadorId)
+	if jugadorId == 16 {
+		log.Println("Comienza la ETAPA 1")
+	}
 
 	return &pbJugador.RespuestaUnirse{Etapa: 1}, nil
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error){
+
 
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -50,6 +56,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	
 	p, _ := peer.FromContext(ctx)
 	direccion := p.Addr
+	solicitudes[ipToId[direccion]] = true
 
 	c := pbName.NewLiderNameServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -73,11 +80,26 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	} else if cantidad == 4 {
 		eliminado = true
 	}
+	if (eliminado) {
+		log.Printf("Jugador %d Eliminado", ipToId[direccion])
+	}
+	v := false
+	for !v {
+		for _ ,value := range solicitudes {
+			v = v && value
+		}
+	}
+	solicitudes[ipToId[direccion]] = false
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
-	
 }
 
 func main() {
+
+	cont := 0
+	for cont < 16 {
+		solicitudes[int32(cont)] = false
+	}
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
