@@ -25,7 +25,7 @@ type server struct {
 
 var jugadorId int32 = 0
 var jugadores []int32
-var solicitudes []bool
+var solicitudes map[int32]bool
 var jugadaLider int32
 var ipToId = make(map[net.Addr]int32)
 
@@ -59,7 +59,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	}
 	// Aquí marcamos que el jugador ha enviado su jugada.
 	p, _ := peer.FromContext(ctx)
-	solicitudes[ipToId[p.Addr] - 1] = true
+	solicitudes[ipToId[p.Addr]] = true
 	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -92,7 +92,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 		eliminado = true
 	}
 	if (eliminado) {
-		log.Printf("Jugador %d Eliminado", ipToId[p.Addr] - 1)
+		log.Printf("Jugador %d Eliminado", ipToId[p.Addr])
 	}
 	
 	// Se esperará hasta que todos los jugadores hayan enviado
@@ -102,7 +102,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 			v = v && value
 		}
 	}
-	solicitudes[ipToId[p.Addr] - 1] = false
+	solicitudes[ipToId[p.Addr]] = false
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 }
 
@@ -110,7 +110,6 @@ func main() {
 	for cont := 0; cont < 16; cont++ {
 		solicitudes[int32(cont)] = false
 	}
-
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
