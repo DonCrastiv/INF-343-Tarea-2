@@ -26,6 +26,7 @@ type server struct {
 var jugadorId int32 = 0
 var jugadores []int32
 var solicitudes map[int32]bool
+var pasaDeEtapa map[int32]bool
 var jugadaLider int32
 var ipToId = make(map[net.Addr]int32)
 
@@ -87,7 +88,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	
 	var etapa int32 = 1
 	if suma >= 21 {
-		etapa = 2
+		pasaDeEtapa[ipToId[p.Addr]] = true
 	} else if cantidad == 4 {
 		eliminado = true
 	}
@@ -97,10 +98,17 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	
 	// Se esperará hasta que todos los jugadores hayan enviado
 	// su jugada para poder avanzar a la siguiente ronda.
+	toLook := solicitudes
+	if pasaDeEtapa[ipToId[p.Addr]] {
+		toLook = pasaDeEtapa
+	}
 	for v := false; !v; {
-		for _, value := range solicitudes {
+		for _, value := range toLook {
 			v = v && value
 		}
+	}
+	if pasaDeEtapa[ipToId[p.Addr]] {
+		pasaDeEtapa[ipToId[p.Addr]] = false
 	}
 	solicitudes[ipToId[p.Addr]] = false
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
