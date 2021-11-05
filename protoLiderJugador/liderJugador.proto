@@ -1,49 +1,27 @@
 syntax = "proto3";
 package grpc;
 
-option go_package = "https://github.com/DonCrastiv/INF-343/protoLiderJugador";
+option go_package = "https://github.com/DonCrastiv/INF-343/ProtoLiderJugadores";
 
 /*PARTICIPAR DEL JUEGO*/
 message Solicitud {
-    bool participa = 1;
 }
 
 message RespuestaSolicitud {
-    int32 idJugador = 1;
-}
-
-/*INFOMAR ETAPAS*/
-message Etapa {
-    int32 numEtapa = 1;
-}
-
-message RespuestaEtapa {
-    string afirmacion = 1;
-}
-
-/*ESTADO DE JUEGO*/
-message Estado {
-    string estado = 1;
-    int32 id = 2;
-}
-
-message RespuestaEstado {
-    string afirmacion = 1;
+    int32 etapa = 1;
 }
 
 /*ENVIAR JUGADAS*/
 message Jugada {
     int32 jugada = 1;
-    int32 id = 2;
 }
 
 message RespuestaJugada {
-    string afirmacion = 1;
+    bool eliminado = 1;
+    int32 etapa = 2;
 }
 
-service Jugador{
+service Jugador {
     rpc IngresarSolicitud (Solicitud) returns (RespuestaSolicitud);
-    rpc InformarEtapas (Etapa) returns (RespuestaEtapa);
-    rpc EnviarJugadas (Jugada) returns (RespuestaJugada);
-    rpc EnviarEstado (Estado) returns (RespuestaEstado);
+    rpc EnviarJugada (Jugada) returns (RespuestaJugada);
 }
