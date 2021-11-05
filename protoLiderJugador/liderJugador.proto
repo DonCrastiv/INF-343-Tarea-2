@@ -4,10 +4,10 @@ package grpc;
 option go_package = "https://github.com/DonCrastiv/INF-343/ProtoLiderJugadores";
 
 /*PARTICIPAR DEL JUEGO*/
-message Solicitud {
+message Unirse {
 }
 
-message RespuestaSolicitud {
+message RespuestaUnirse {
     int32 etapa = 1;
 }
 
@@ -21,7 +21,16 @@ message RespuestaJugada {
     int32 etapa = 2;
 }
 
+/*VER POZO*/
+message VerPozo {
+}
+
+message RespuestaVerPozo {
+    int32 montoAcumulado = 1;
+}
+
 service Jugador {
-    rpc IngresarSolicitud (Solicitud) returns (RespuestaSolicitud);
+    rpc SolicitarUnirse (Unirse) returns (RespuestaUnirse);
     rpc EnviarJugada (Jugada) returns (RespuestaJugada);
+    rpc SolicitarVerPozo (VerPozo) returns (RespuestaVerPozo);
 }

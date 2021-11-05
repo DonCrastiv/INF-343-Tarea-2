@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"math/rand"
 	"math/rand"
 	"time"
 
@@ -28,7 +27,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	rS, err := c.IngresarSolicitud(ctx, &pb.Solicitud{})
+	rS, err := c.SolicitarUnirse(ctx, &pb.Unirse{})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
 	}
@@ -52,6 +51,5 @@ func main() {
 		}
 		elim = rJ.GetEliminado()
 		etapa = rJ.GetEtapa()
-		log.Printf("%t %d", elim, etapa)
 	}
 }
