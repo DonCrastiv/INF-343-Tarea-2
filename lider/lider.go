@@ -26,6 +26,7 @@ type server struct {
 var jugadorId int32 = 0
 var jugadores []int32
 var solicitudes map[int32]bool
+var miJugada int32
 var ipToId = make(map[net.Addr]int32)
 
 
@@ -66,7 +67,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	jugadas := r.Jugadas
 	cantidad := r.Cantidad
 	var suma int32 = 0
-	miJugada := rand.Int31n(5) + 6
+	
 	for _, v := range jugadas {  
 		suma += v  
 	}
@@ -88,6 +89,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 		}
 	}
 	solicitudes[ipToId[direccion]] = false
+	miJugada = rand.Int31n(5) + int32(6)
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 }
 
@@ -97,7 +99,7 @@ func main() {
 	for cont < 16 {
 		solicitudes[int32(cont)] = false
 	}
-
+	miJugada = rand.Int31n(5) + int32(6)
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
