@@ -17,6 +17,8 @@ const (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
@@ -25,8 +27,11 @@ func main() {
 
 	c := pb.NewJugadorClient(conn)
 
+	/*
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+	*/
+	ctx := context.Background()
 	rS, err := c.SolicitarUnirse(ctx, &pb.Unirse{})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
@@ -45,11 +50,15 @@ func main() {
 		case 3:
 			jugada = rand.Int31n(10) + 1
 		}
-		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada})
+		rJ, err = c.EnviarJugada(ctx, &pb.Jugada{Jugada: jugada, Etapa: etapa})
 		if err != nil {
 			log.Fatalf("Hubo un error con el envío o proceso de la jugada: %v", err)
 		}
 		elim = rJ.GetEliminado()
 		etapa = rJ.GetEtapa()
+		log.Printf("Eliminado: %t, Etapa: %d", elim, etapa)
+		if etapa == 2 {
+			elim = true
+		}
 	}
 }
