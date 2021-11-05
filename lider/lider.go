@@ -25,7 +25,8 @@ type server struct {
 
 var jugadorId int32 = 0
 var jugadores []int32
-var solicitudes map[int32]bool
+var solicitudes []bool
+var jugadaLider int32
 var ipToId = make(map[net.Addr]int32)
 
 
@@ -46,31 +47,43 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error) {
+	// Si esta se trata de la primera jugada de la ronda,
+	// entonces el líder eligirá un número.
+	v := false
+	for _, value := range solicitudes {
+		v = v || value
+	}
+	if !v {
+		jugadaLider = rand.Int31n(5) + 6
+		// <ronda>++
+	}
+	// Aquí marcamos que el jugador ha enviado su jugada.
+	p, _ := peer.FromContext(ctx)
+	solicitudes[ipToId[p.Addr] - 1] = true
+	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
 	}
 	defer conn.Close()
 	
-	p, _ := peer.FromContext(ctx)
-	direccion := p.Addr
-	solicitudes[ipToId[direccion]] = true
-
 	c := pbName.NewLiderNameServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: ipToId[direccion], Jugada: in.Jugada, Etapa: 1})
+	r, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: ipToId[p.Addr], Jugada: in.Jugada, Etapa: 1})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud entre Lider-NameNode: %v", err)
 	}
 	jugadas := r.Jugadas
+	// <cantidad> es el número de ronda?
 	cantidad := r.Cantidad
 	var suma int32 = 0
-	miJugada := rand.Int31n(5) + 6
+
+	// Reglas de eliminación del juego.
 	for _, v := range jugadas {  
 		suma += v  
 	}
-	eliminado := jugadas[cantidad-1] >= miJugada
+	eliminado := jugadas[cantidad-1] >= jugadaLider
 	
 	var etapa int32 = 1
 	if suma >= 21 {
@@ -79,22 +92,22 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 		eliminado = true
 	}
 	if (eliminado) {
-		log.Printf("Jugador %d Eliminado", ipToId[direccion])
+		log.Printf("Jugador %d Eliminado", ipToId[p.Addr] - 1)
 	}
-	v := false
-	for !v {
-		for _ ,value := range solicitudes {
+	
+	// Se esperará hasta que todos los jugadores hayan enviado
+	// su jugada para poder avanzar a la siguiente ronda.
+	for v := false; !v; {
+		for _, value := range solicitudes {
 			v = v && value
 		}
 	}
-	solicitudes[ipToId[direccion]] = false
+	solicitudes[ipToId[p.Addr] - 1] = false
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 }
 
 func main() {
-
-	cont := 0
-	for cont < 16 {
+	for cont := 0; cont < 16; cont++ {
 		solicitudes[int32(cont)] = false
 	}
 
