@@ -14,6 +14,7 @@ message RespuestaUnirse {
 /*ENVIAR JUGADAS*/
 message Jugada {
     int32 jugada = 1;
+    int32 etapa = 2;
 }
 
 message RespuestaJugada {
