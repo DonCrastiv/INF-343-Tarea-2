@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"time"
+	"math/rand"
 	"net"
 	"fmt"
 
@@ -33,7 +34,7 @@ func (s *server) IngresarSolicitud(ctx context.Context, in *pbJugador.Solicitud)
 	fmt.Printf("%v", jugadores)
 	p, _ := peer.FromContext(ctx)
 	ipToId[p.Addr] = jugadorId 
-	return &pb.RespuestaSolicitud{Etapa: 1}, nil
+	return &pbJugador.RespuestaSolicitud{Etapa: 1}, nil
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error){
@@ -50,11 +51,26 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	c := pbName.NewLiderNameServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	rS, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: , Jugada: , Etapa: })
+	r, err := c.EnviarJugadas(ctx, &pbName.Jugada{IdJugador: ipToId[direccion], Jugada: in.Jugada, Etapa: int32(1)})
 	if err != nil {
-		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
+		log.Fatalf("Hubo un error con el envío o proceso de la solicitud entre Lider-NameNode: %v", err)
 	}
-
+	jugadas := r.Jugadas
+	cantidad := r.Cantidad
+	var suma int32 = 0
+	miJugada := rand.Int31n(5) + 6
+	for _, v := range jugadas {  
+			suma += v  
+		}
+	eliminado := jugadas[cantidad-1] >= miJugada
+	
+	var etapa int32 = 1
+	if suma >= 21 {
+		etapa = 2
+	} else if cantidad == 4 {
+		eliminado = true
+	}
+	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 	
 }
 
