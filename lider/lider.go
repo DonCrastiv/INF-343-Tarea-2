@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net"
-	"fmt"
 
 	pb "inf343-tarea-2/protoLiderJugador"
 
@@ -26,11 +25,15 @@ var jugadores []int32
 var ipToId = make(map[net.Addr]int32)
 
 func (s *server) IngresarSolicitud(ctx context.Context, in *pb.Solicitud) (*pb.RespuestaSolicitud, error) {
-	jugadorId++
-	jugadores = append(jugadores, jugadorId)
-	fmt.Printf("%v", jugadores)
 	p, _ := peer.FromContext(ctx)
+	if val, ok := ipToId[p.Addr]; !ok {
+		log.Fatalf("%s ya tiene asignada la id %d", p.Addr.String(), val)
+	}
+	
+	jugadorId++
 	ipToId[p.Addr] = jugadorId 
+	jugadores = append(jugadores, jugadorId)
+
 	return &pb.RespuestaSolicitud{Etapa: 1}, nil
 }
 

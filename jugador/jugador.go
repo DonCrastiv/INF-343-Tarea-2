@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"math/rand"
 	"math/rand"
 	"time"
 
@@ -52,6 +51,5 @@ func main() {
 		}
 		elim = rJ.GetEliminado()
 		etapa = rJ.GetEtapa()
-		log.Printf("%t %d", elim, etapa)
 	}
 }
