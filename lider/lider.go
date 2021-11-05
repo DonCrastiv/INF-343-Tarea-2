@@ -66,8 +66,8 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	// Si esta se trata de la primera jugada de la ronda,
 	// entonces el líder eligirá un número.
 	v := false
-	for _, value := range jugoLaRonda {
-		v = v || value //ojo
+	for i, value := range jugoLaRonda {
+		v = v || (value && !eliminados[i])
 	}
 	if !v {
 		jugadaLider = rand.Int31n(5) + 6
@@ -77,8 +77,6 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	p, _ := peer.FromContext(ctx)
 	jugoLaRonda[ipToId[p.Addr] - 1] = true
 
-
-	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
@@ -103,39 +101,41 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	
 	var etapa int32 = 1
 	if suma >= 21 {	
-		etapa = int32(2)
-		pasaDeEtapa[ipToId[p.Addr]] = true
+		etapa = 2
+		pasaDeEtapa[ipToId[p.Addr] - 1] = true
 	} else if cantidad == 4 {
 		eliminado = true
 	}
 	if (eliminado) {
-		eliminados[ipToId[p.Addr] - 1] = false
+		eliminados[ipToId[p.Addr] - 1] = true
 		log.Printf("Jugador %d Eliminado", ipToId[p.Addr])
 	}
 	
 	// Se esperará hasta que todos los jugadores hayan enviado
 	// su jugada para poder avanzar a la siguiente ronda.
-	toLook := jugoLaRonda
+	revisar := jugoLaRonda
 	if pasaDeEtapa[ipToId[p.Addr] - 1] {
-		toLook = pasaDeEtapa
+		revisar = pasaDeEtapa
 	}
 	for v := false; !v; {
-		for _, value := range toLook {
-			v = v && value
+		v = true
+		for i, value := range revisar {
+			v = v && (value || eliminados[i])
 		}
 	}
 	if pasaDeEtapa[ipToId[p.Addr] - 1] {
 		pasaDeEtapa[ipToId[p.Addr] - 1] = false
 	}
 	jugoLaRonda[ipToId[p.Addr] - 1] = false
+	
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 }
 
 func main() {
 	for cont := 0; cont < 16; cont++ {
 		jugoLaRonda = append(jugoLaRonda, false)
-		jugoLaRonda = append(pasaDeEtapa, false)
-		jugoLaRonda = append(eliminados, false)
+		pasaDeEtapa = append(pasaDeEtapa, false)
+		eliminados = append(eliminados, false)
 	}
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
