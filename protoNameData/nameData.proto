@@ -11,11 +11,11 @@ message Jugada{
     int32 etapa = 3;
 }
 
-message RespuestaJugadas {
+message RespuestaJugada {
     repeated int32 jugadas = 1;
     int32 cantidad = 2;
 }
 
 service NameDataService {
-    rpc RegistrarJugadas (Jugada) returns (RespuestaJugadas);
+    rpc RegistrarJugadas (Jugada) returns (RespuestaJugada);
 }

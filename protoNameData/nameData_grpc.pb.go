@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NameDataServiceClient interface {
-	RegistrarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugadas, error)
+	RegistrarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error)
 }
 
 type nameDataServiceClient struct {
@@ -29,8 +29,8 @@ func NewNameDataServiceClient(cc grpc.ClientConnInterface) NameDataServiceClient
 	return &nameDataServiceClient{cc}
 }
 
-func (c *nameDataServiceClient) RegistrarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugadas, error) {
-	out := new(RespuestaJugadas)
+func (c *nameDataServiceClient) RegistrarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error) {
+	out := new(RespuestaJugada)
 	err := c.cc.Invoke(ctx, "/grpc.NameDataService/RegistrarJugadas", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (c *nameDataServiceClient) RegistrarJugadas(ctx context.Context, in *Jugada
 // All implementations must embed UnimplementedNameDataServiceServer
 // for forward compatibility
 type NameDataServiceServer interface {
-	RegistrarJugadas(context.Context, *Jugada) (*RespuestaJugadas, error)
+	RegistrarJugadas(context.Context, *Jugada) (*RespuestaJugada, error)
 	mustEmbedUnimplementedNameDataServiceServer()
 }
 
@@ -50,7 +50,7 @@ type NameDataServiceServer interface {
 type UnimplementedNameDataServiceServer struct {
 }
 
-func (UnimplementedNameDataServiceServer) RegistrarJugadas(context.Context, *Jugada) (*RespuestaJugadas, error) {
+func (UnimplementedNameDataServiceServer) RegistrarJugadas(context.Context, *Jugada) (*RespuestaJugada, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegistrarJugadas not implemented")
 }
 func (UnimplementedNameDataServiceServer) mustEmbedUnimplementedNameDataServiceServer() {}
