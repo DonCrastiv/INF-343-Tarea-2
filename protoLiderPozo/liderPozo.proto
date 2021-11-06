@@ -1,0 +1,17 @@
+syntax = "proto3";
+package grpc;
+
+option go_package = "https://github.com/DonCrastiv/INF-343/protoLiderPozo";
+
+
+/*ENVIAR JUGADAS*/
+message Request {
+}
+
+message Response {
+    int32 monto = 1;
+}
+
+service LiderPozoService {
+    rpc ConsultarPozo (Request) returns (Response);
+}
