@@ -4,11 +4,13 @@ import (
 	"context"
 	"log"
 	"math/rand"
+	"math"
 	"net"
 	"time"
+	"sync"
 
 	pbJugador "inf343-tarea-2/protoLiderJugador"
-	//	pbName "inf343-tarea-2/protoLiderName"
+	pbName "inf343-tarea-2/protoLiderName"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
@@ -17,29 +19,26 @@ import (
 const (
 	address = "localhost:50052"
 	port = ":50051"
-	players = 2
+	players = 16
 )
 
 type server struct {
 	pbJugador.UnimplementedJugadorServer
 }
 
-var eliminados [2]bool
-//var pasaDeRonda [2]bool
-//var pasaDeEtapa [2]bool
+var cochinoCandado sync.Mutex
+
+var eliminados [players]bool
 var ipToId = make(map[net.Addr]int32)
 var jugadasLider [6]int32
-
-func RemoveIndex(s []int32, index int) []int32 {
-	return append(s[:index], s[index+1:]...)
-}
 
 // PROVISIONAL
 var suma [players]int32
 var ronda [players]int32
 // END PROVISIONAL
 func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
-	/*
+	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
+	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
@@ -60,12 +59,8 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	for _, v := range jugadas {  
 		suma += v  
 	}
-	*/
+	
 	// PROVISIONAL
-	suma[idJugador - 1] += jugada
-	suma := suma[idJugador - 1]
-	ronda[idJugador - 1] += 1
-	ronda := ronda[idJugador - 1]
 	jugadaLider := jugadasLider[ronda - 1]
 	// END PROVISIONAL
 
@@ -75,7 +70,6 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	var etapa int32 = 1
 	if suma >= 21 {	
 		etapa = 2
-		//pasaDeEtapa[idJugador - 1] = true
 	} else if ronda == 4 {
 		eliminado = true
 	} else if ronda > 4 {
@@ -86,11 +80,11 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 }
 
 var jugadasTC [players]int32
-var elegido int32 = 0
+var elegidoTC int32 = 0
 var equipoEliminado int
 func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
-	jugadasTC[idJugador] = jugada
-
+	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
+	jugadasTC[idJugador - 1] = jugada
 	// Esperar a que todos hayan hecho su jugada.
 	// Aprovechamos para contar los jugadores vivos.
 	var vivos int
@@ -107,20 +101,25 @@ func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
 	}
 	// Eliminamos al jugador al azar si son impares
 	if (vivos%2 != 0) {
-		if elegido == 0 {
-			for i := rand.Intn(vivos); i >= 0; elegido++ {
-				if !eliminados[elegido] {
+		cochinoCandado.Lock()
+		if elegidoTC == 0 {
+			for i := rand.Intn(vivos); i >= 0; elegidoTC++ {
+				if !eliminados[elegidoTC] {
 					i -= 1
 				}
 			}
-			eliminados[elegido - 1] = true
+			eliminados[elegidoTC - 1] = true
+			log.Printf("Ya que la cantidad de jugadores es impar, el jugador %d será eliminado", elegidoTC)
 		}
+		cochinoCandado.Unlock()
 		vivos--
 	}
-	if idJugador == elegido {
+	if idJugador == elegidoTC {
 		return true, 2
 	}
 
+	// Dividimos a los jugadores vivos en la mitad por orden
+	// de id y calculamos el valor sumado de los equipos.
 	equipo := vivos/2
 	cont := 0
 	var miEquipo int
@@ -142,8 +141,11 @@ func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
 		}
 	}
 
+	// Eliminamos de acuerdo a la paridad.
 	pariLider := jugadasLider[4]%2
+	log.Printf("Suma equipo 1: %d, Suma equipo 2: %d, Líder: %d", sum[0], sum[1], jugadasLider[4])
 	if (sum[0]%2 != pariLider) && (sum[1]%2 != pariLider) {
+		log.Printf("Ningún equipo tiene la misma paridad que el Líder. El equipo %d queda eliminado", equipoEliminado)
 		if miEquipo == equipoEliminado {
 			return true, 2
 		}
@@ -155,9 +157,70 @@ func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
 }
 
 var jugadasTN [players]int32
+var rivalesTN [players]int32
+var elegidoTN int32 = 0
 func TodoNada(idJugador int32, jugada int32) (bool, int32) {
-	jugadasTN[idJugador] = jugada
-	return true, 0
+	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
+	jugadasTN[idJugador - 1] = jugada
+	
+	vivos := 0
+	for i := range jugadasTN {
+		if !eliminados[i]  {
+			vivos++
+		}
+	}
+	if vivos == 1 {
+		return false, 4
+	}
+
+	// Esperar a que todos hayan hecho su jugada.
+	for listo := false; !listo; {
+		listo = true
+		for i, value := range jugadasTN {
+			if !eliminados[i] && (value == 0) {
+				listo = false
+				break
+			}
+		}
+	}
+
+	if (vivos%2 != 0) {
+		cochinoCandado.Lock()
+		if elegidoTN == 0 {
+			for i := rand.Intn(vivos); i >= 0; elegidoTN++ {
+				if !eliminados[elegidoTN] {
+					i -= 1
+				}
+			}
+			eliminados[elegidoTN - 1] = true
+			log.Printf("Ya que la cantidad de jugadores es impar, el jugador %d será eliminado", elegidoTN)
+		}
+		cochinoCandado.Unlock()
+		vivos--
+	}
+	if idJugador == elegidoTN {
+		return true, 3
+	}
+
+	// Asigno las parejas
+	cochinoCandado.Lock()
+	if rivalesTN[idJugador - 1] == -1 {
+		for rivalIndice, value := range rivalesTN {
+			// Asigno como rival al primer jugador no muerto y sin pareja que encuentre
+			if !eliminados[rivalIndice] && (value == -1) && (idJugador != int32(rivalIndice) + 1) {
+				log.Printf("El jugador %d y el jugador %d son pareja", idJugador, rivalIndice + 1)
+				rivalesTN[idJugador - 1] = int32(rivalIndice)
+				rivalesTN[rivalIndice] = idJugador - 1
+			}
+		}
+	}
+	cochinoCandado.Unlock()
+
+	log.Printf("Jugador %d (%d) vs Jugador %d (%d)", idJugador, int(math.Abs(float64(jugadasLider[5] - jugada))), rivalesTN[idJugador - 1] + 1, int(math.Abs(float64(jugadasLider[5] - jugadasTN[rivalesTN[idJugador - 1]]))))
+	if math.Abs(float64(jugadasLider[5] - jugada)) <= math.Abs(float64(jugadasLider[5] - jugadasTN[rivalesTN[idJugador - 1]])) {
+		return false, 4
+	}
+	return true, 3
 }
 
 var jugadorId int32 = 0
@@ -179,15 +242,16 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error) {
 	p, _ := peer.FromContext(ctx)
-	log.Printf("El jugador %d ha sacado un %d", ipToId[p.Addr], in.Jugada)
 	var eliminado bool
 	var etapa int32
 	switch in.Etapa {
 	case 1:
 		eliminado, etapa = LuzRojaLuzVerde(ipToId[p.Addr], in.Jugada)
 	case 2:
+		log.Printf("El jugador %d avanza a la ETAPA 2", ipToId[p.Addr])
 		eliminado, etapa = TirarCuerda(ipToId[p.Addr], in.Jugada)
 	case 3:
+		log.Printf("El jugador %d avanza a la ETAPA 3", ipToId[p.Addr])
 		eliminado, etapa = TodoNada(ipToId[p.Addr], in.Jugada)
 	}
 	
@@ -195,25 +259,20 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 		eliminados[ipToId[p.Addr] - 1] = true
 		log.Printf("Jugador %d Eliminado", ipToId[p.Addr])
 	}
-	
+	if (etapa == 4) {
+		log.Printf("El jugador %d ha ganado el Squid Game", ipToId[p.Addr])
+	}
 	return &pbJugador.RespuestaJugada{Eliminado: eliminado, Etapa: etapa}, nil
 }
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+
 	for i := range suma {
-		/*
-		pasaDeRonda[i] = false
-		pasaDeEtapa[i] = false
 		eliminados[i] = false
-		*/
 		jugadasTC[i] = 0
 		jugadasTN[i] = 0
-
-		// PROVISIONAL
-		suma[i] = 0
-		ronda[i] = 0
-		// END PROVISIONAL
+		rivalesTN[i] = -1
 	}
 	for i := 0; i < 4; i++ {
 		jugadasLider[i] = rand.Int31n(5) + 6
