@@ -2,14 +2,29 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"log"
 	"os"
+	"time"
+
+	pbNameData "inf343-tarea-2/protoNameData"
+
+	"google.golang.org/grpc"
+)
+
+const (
+	adress = "localhost:50051"
 )
 
 type nameNodeData struct {
 	playerNumber int
 	playerStage  int
 	ip           string
+}
+
+type Jugada{
+	
 }
 
 func (p *nameNodeData) savePlayerData() {
@@ -48,4 +63,20 @@ func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func main() {
+	conn, err := grpc.Dial(adress, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect\n")
+	}
+	defer conn.Close()
+	c := pbNameData.NewNameDataServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	r, err := c.RegistrarJugadas(ctx, &pbNameData.Jugada{IdJugador: int32(1), Etapa: int32(2), Jugada: int32(3)})
+	//log.Printf("Jugada %v", r)
+	log.Printf("%v", r.Jugadas)
 }
