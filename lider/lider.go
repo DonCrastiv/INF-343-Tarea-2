@@ -88,7 +88,7 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	defer conn.Close()
 	
 	c := pbName.NewLiderNameServiceClient(conn)
-	r, err := c.EnviarJugadas(context.Background(), &pbName.Jugada{IdJugador: idJugador, Jugada: jugada, Etapa: 1})
+	r, err := c.EnviarJugadas(context.Background(), &pbName.JugadaToName{IdJugador: idJugador, Jugada: jugada, Etapa: 1})
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud entre Lider-NameNode: %v", err)
 	}
@@ -282,7 +282,7 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 	return &pbJugador.RespuestaUnirse{Etapa: 1}, nil
 }
 
-func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJugador.RespuestaJugada, error) {
+func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.JugadaToLider) (*pbJugador.RespuestaJugada, error) {
 	p, _ := peer.FromContext(ctx)
 	var eliminado bool
 	var etapa int32

@@ -21,7 +21,7 @@ type DataNodeServer struct {
 	pb.UnimplementedNameDataServiceServer
 }
 
-func (s *DataNodeServer) RegistrarJugadas(ctx context.Context, in *pb.Jugada) (*pb.RespuestaJugada, error) {
+func (s *DataNodeServer) RegistrarJugadas(ctx context.Context, in *pb.JugadaToData) (*pb.RespuestaJugada, error) {
 	log.Printf("Input - num: %d | st: %d\n", in.IdJugador, in.Etapa)
 	var pl = JugadaDN{idJugador: in.IdJugador, etapa: in.Etapa}
 	var jgs []int32

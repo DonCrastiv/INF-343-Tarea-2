@@ -39,7 +39,7 @@ func (p *nameNodeData) savePlayerData() {
 	f.Close()
 }
 
-func (s *server) EnviarJugadas (ctx context.Context, in *pbLiderName.Jugada) (*pbLiderName.RespuestaJugadas, error) {
+func (s *server) EnviarJugadas (ctx context.Context, in *pbLiderName.JugadaToName) (*pbLiderName.RespuestaJugadas, error) {
 	
 	
 	conn, err := grpc.Dial(adress, grpc.WithInsecure(), grpc.WithBlock())
@@ -48,7 +48,7 @@ func (s *server) EnviarJugadas (ctx context.Context, in *pbLiderName.Jugada) (*p
 	}
 	defer conn.Close()
 	c := pbNameData.NewNameDataServiceClient(conn)
-	r, err := c.RegistrarJugadas(context.Background(), &pbNameData.Jugada{IdJugador: in.IdJugador, Etapa: in.Etapa, Jugada: in.Jugada})
+	r, err := c.RegistrarJugadas(context.Background(), &pbNameData.JugadaToData{IdJugador: in.IdJugador, Etapa: in.Etapa, Jugada: in.Jugada})
 	return &pbLiderName.RespuestaJugadas{Jugadas: r.Jugadas, Cantidad: r.Cantidad}, nil
 }
 
