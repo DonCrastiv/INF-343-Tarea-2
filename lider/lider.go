@@ -13,6 +13,7 @@ import (
 
 	pbJugador "inf343-tarea-2/protoLiderJugador"
 	pbName "inf343-tarea-2/protoLiderName"
+	pbPozo "inf343-tarea-2/protoLiderPozo"
 	amqp "github.com/rabbitmq/amqp091-go"
 
 	"google.golang.org/grpc"
@@ -43,6 +44,7 @@ func failOnError(err error, msg string) {
 }
 
 func updatePozo(idJugador int32, etapa int32){
+
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -63,7 +65,7 @@ func updatePozo(idJugador int32, etapa int32){
 
 	body1 := strconv.Itoa(int(idJugador))
 	body2 := strconv.Itoa(int(etapa))
-	body := body1 + " " + body2
+	body := body1+ " " +body2
 	err = ch.Publish(
 		"",     // exchange
 		q.Name, // routing key
@@ -76,6 +78,20 @@ func updatePozo(idJugador int32, etapa int32){
 	failOnError(err, "Failed to publish a message")
 	log.Printf(" [x] Sent %s", body)
 
+}
+
+func (s *server) SolicitarVerPozo (ctx context.Context, in *pbJugador.VerPozo) (*pbJugador.RespuestaVerPozo, error){
+	
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("No se pudo conectar: %v", err)
+	}
+	defer conn.Close()
+	c := pbPozo.NewLiderPozoServiceClient(conn)
+	r, err := c.ConsultarPozo(context.Background(), &pbPozo.Request{})
+	monto := r.Monto
+
+	return &pbJugador.RespuestaVerPozo{MontoAcumulado: monto}, nil
 }
 
 func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
