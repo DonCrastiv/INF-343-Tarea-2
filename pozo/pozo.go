@@ -2,11 +2,25 @@ package main
 
 import (
 	"log"
-	"io"
+	"context"
+	"net"
+	"strings"
 	"os"
-
+	"strconv"
+	pb "inf343-tarea-2/protoLiderPozo"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"google.golang.org/grpc"
 )
+
+const (
+	port = ":500054"
+)
+
+var monto int32 = 0
+
+type server struct {
+	pb.UnimplementedLiderPozoServiceServer
+}
 
 func failOnError(err error, msg string) {
 	if err != nil {
@@ -14,8 +28,35 @@ func failOnError(err error, msg string) {
 	}
 }
 
+func ConexionGRPC () (){
+
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	s := server{}
+	grcpServer := grpc.NewServer()
+
+	pb.RegisterLiderPozoServiceServer(grcpServer, &s)
+	log.Printf("server listening at %v", lis.Addr())
+	if err := grcpServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
+
+func (s *server) ConsultarPozo (ctx context.Context, in *pb.Request) (*pb.Response, error) {
+
+	return &pb.Response{Monto: monto}, nil
+}
+
+
 
 func main() {
+
+	file, err := os.Create("pozo.txt")
+
+	go ConexionGRPC()
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -50,7 +91,11 @@ func main() {
 	go func() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
-			f, err := os.OpenFile("pozo.txt", os.O_APPEND|os.O_CREATE, 0600)
+			var mensaje = strings.Split(string(d.Body), " ")
+			var idJugador = mensaje[0]
+			var etapa = mensaje[1]
+			monto = monto + int32(100000000)
+			file.WriteString("Jugador_"+idJugador+" Ronda_"+etapa+" "+strconv.Itoa(int(monto)))
 		}
 	}()
 

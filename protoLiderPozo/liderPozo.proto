@@ -4,7 +4,7 @@ package grpc;
 option go_package = "https://github.com/DonCrastiv/INF-343/protoLiderPozo";
 
 
-/*ENVIAR JUGADAS*/
+
 message Request {
 }
 
