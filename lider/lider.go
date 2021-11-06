@@ -22,7 +22,7 @@ import (
 const (
 	address = "localhost:50052"
 	port = ":50051"
-	players = 16
+	players = 2
 )
 
 type server struct {

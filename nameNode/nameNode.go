@@ -39,8 +39,8 @@ func (p *nameNodeData) savePlayerData() {
 	f.Close()
 }
 
-func (s *server) EnviarJugadas (ctx context.Context, in *pbLiderName.JugadaToName) (*pbLiderName.RespuestaJugadas, error) {
-	
+func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName) (*pbLiderName.RespuestaJugadas, error) {
+	log.Printf("Recibido: %d %d %d", in.IdJugador, in.Etapa, in.Jugada)
 	
 	conn, err := grpc.Dial(adress, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
