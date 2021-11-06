@@ -22,7 +22,7 @@ import (
 const (
 	address = "localhost:50052"
 	port = ":50051"
-	players = 2
+	players = 16
 )
 
 type server struct {
@@ -141,6 +141,10 @@ func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
 			}
 		}
 	}
+	if vivos == 1 {
+		return false, 4
+	}
+	
 	// Eliminamos al jugador al azar si son impares
 	if (vivos%2 != 0) {
 		cochinoCandado.Lock()
