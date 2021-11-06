@@ -57,6 +57,8 @@ func main() {
 	file, err := os.Create("pozo.txt")
 
 	go ConexionGRPC()
+
+	
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -95,7 +97,7 @@ func main() {
 			var idJugador = mensaje[0]
 			var etapa = mensaje[1]
 			monto = monto + int32(100000000)
-			file.WriteString("Jugador_"+idJugador+" Ronda_"+etapa+" "+strconv.Itoa(int(monto))+"\n")
+			file.WriteString("Jugador_"+idJugador+" Etapa_"+etapa+" "+strconv.Itoa(int(monto))+"\n")
 		}
 	}()
 

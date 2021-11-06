@@ -33,12 +33,15 @@ type server struct {
 
 var cochinoCandado sync.Mutex
 
+
 var eliminados [players]bool
 var ipToId = make(map[net.Addr]int32)
 var jugadasLider [6]int32
 var iterador [players]int32
 
 func UpdatePozo(idJugador int32, etapa int32) {
+
+	log.Printf("[POZO] El jugador %d:", idJugador)
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
 		log.Fatalf("%s: %s", "Failed to connect to RabbitMQ", err)
@@ -62,10 +65,10 @@ func UpdatePozo(idJugador int32, etapa int32) {
 	if err != nil {
 		log.Fatalf("%s: %s", "Failed to declare a queue", err)
 	}
-
 	body1 := strconv.Itoa(int(idJugador))
 	body2 := strconv.Itoa(int(etapa))
 	body := body1+ " " +body2
+	log.Printf("[POZO] Enviar muerte del jugador %d:", idJugador)
 	err = ch.Publish(
 		"",     // exchange
 		q.Name, // routing key
@@ -79,6 +82,7 @@ func UpdatePozo(idJugador int32, etapa int32) {
 		log.Fatalf("%s: %s", "Failed to publish a message", err)
 	}
 	log.Printf(" [x] Sent %s", body)
+	
 }
 
 func (s *server) SolicitarVerPozo (ctx context.Context, in *pbJugador.VerPozo) (*pbJugador.RespuestaVerPozo, error){
@@ -315,6 +319,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.JugadaToLider) 
 	}
 	
 	if (eliminado) {
+		
 		UpdatePozo(ipToId[p.Addr], etapa)
 		eliminados[ipToId[p.Addr] - 1] = true
 		log.Printf("Jugador %d Eliminado", ipToId[p.Addr])
