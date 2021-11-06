@@ -36,19 +36,17 @@ var ipToId = make(map[net.Addr]int32)
 var jugadasLider [6]int32
 var iterador [players]int32
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
-}
-
-func updatePozo(idJugador int32, etapa int32){
+func UpdatePozo(idJugador int32, etapa int32) {
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	failOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		log.Fatalf("%s: %s", "Failed to connect to RabbitMQ", err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
+	if err != nil {
+		log.Fatalf("%s: %s", "Failed to open a channel", err)
+	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -59,7 +57,9 @@ func updatePozo(idJugador int32, etapa int32){
 		false,   // no-wait
 		nil,     // arguments
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.Fatalf("%s: %s", "Failed to declare a queue", err)
+	}
 
 	body1 := strconv.Itoa(int(idJugador))
 	body2 := strconv.Itoa(int(etapa))
@@ -73,9 +73,10 @@ func updatePozo(idJugador int32, etapa int32){
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
-	failOnError(err, "Failed to publish a message")
+	if err != nil {
+		log.Fatalf("%s: %s", "Failed to publish a message", err)
+	}
 	log.Printf(" [x] Sent %s", body)
-
 }
 
 func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
@@ -93,21 +94,16 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud entre Lider-NameNode: %v", err)
 	}
 	jugadas := r.Jugadas
-	// <cantidad> es el número de ronda?
 	ronda := r.Cantidad
-	var suma int32 = 0
-
+	
 	// Reglas de eliminación del juego.
+	var suma int32 = 0
 	for _, v := range jugadas {  
 		suma += v  
 	}
-	
-	// PROVISIONAL
-	jugadaLider := jugadasLider[ronda - 1]
-	// END PROVISIONAL
 
-	eliminado := jugada >= jugadaLider
-	log.Printf("Jugador %d: %d, Lider: %d, Suma jugador %d: %d", idJugador, jugada, jugadaLider, idJugador, suma)
+	eliminado := jugada >= jugadasLider[ronda - 1]
+	log.Printf("Jugador %d: %d, Lider: %d, Suma jugador %d: %d", idJugador, jugada, jugadasLider[ronda - 1], idJugador, suma)
 	
 	var etapa int32 = 1
 	if suma >= 21 {	
