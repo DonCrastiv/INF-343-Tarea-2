@@ -3,6 +3,7 @@ module inf343-tarea-2
 go 1.17
 
 require (
+	github.com/rabbitmq/amqp091-go v1.1.0
 	google.golang.org/grpc v1.41.0
 	google.golang.org/protobuf v1.27.1
 )

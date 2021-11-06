@@ -6,25 +6,27 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
+	"net"
 
 	pbNameData "inf343-tarea-2/protoNameData"
+	pbLiderName "inf343-tarea-2/protoLiderName"
 
 	"google.golang.org/grpc"
 )
 
 const (
-	adress = "localhost:50051"
+	adress = "localhost:50053"
+	port = "50052"
 )
+
+type server struct {
+	pbLiderName.UnimplementedLiderNameServiceServer
+}
 
 type nameNodeData struct {
 	playerNumber int
 	playerStage  int
 	ip           string
-}
-
-type Jugada{
-	
 }
 
 func (p *nameNodeData) savePlayerData() {
@@ -35,6 +37,19 @@ func (p *nameNodeData) savePlayerData() {
 	check(err)
 	fmt.Fprintf(f, "Jugador_%d Ronda_%d 10.0.1.10\n", p.playerNumber, p.playerStage)
 	f.Close()
+}
+
+func (s *server) EnviarJugadas (ctx context.Context, in *pbLiderName.Jugada) (*pbLiderName.RespuestaJugadas, error) {
+	
+	
+	conn, err := grpc.Dial(adress, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect\n")
+	}
+	defer conn.Close()
+	c := pbNameData.NewNameDataServiceClient(conn)
+	r, err := c.RegistrarJugadas(context.Background(), &pbNameData.Jugada{IdJugador: in.IdJugador, Etapa: in.Etapa, Jugada: in.Jugada})
+	return &pbLiderName.RespuestaJugadas{Jugadas: r.Jugadas, Cantidad: r.Cantidad}, nil
 }
 
 func (p *nameNodeData) getStoredIP() {
@@ -66,17 +81,19 @@ func check(err error) {
 }
 
 func main() {
-	conn, err := grpc.Dial(adress, grpc.WithInsecure(), grpc.WithBlock())
+
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatalf("did not connect\n")
+		log.Fatalf("failed to listen: %v", err)
 	}
-	defer conn.Close()
-	c := pbNameData.NewNameDataServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	s := server{}
+	grcpServer := grpc.NewServer()
 
-	r, err := c.RegistrarJugadas(ctx, &pbNameData.Jugada{IdJugador: int32(1), Etapa: int32(2), Jugada: int32(3)})
-	//log.Printf("Jugada %v", r)
-	log.Printf("%v", r.Jugadas)
+	pbLiderName.RegisterLiderNameServiceServer(grcpServer, &s)
+	log.Printf("server listening at %v", lis.Addr())
+	if err := grcpServer.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+
 }
