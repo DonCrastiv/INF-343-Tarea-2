@@ -42,7 +42,7 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func updatePozo(idJugador int32){
+func updatePozo(idJugador int32, etapa int32){
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -61,7 +61,9 @@ func updatePozo(idJugador int32){
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	body := strconv.Itoa(int(idJugador))
+	body1 := strconv.Itoa(int(idJugador))
+	body2 := strconv.Itoa(int(etapa))
+	body := body1 + " " + body2
 	err = ch.Publish(
 		"",     // exchange
 		q.Name, // routing key
