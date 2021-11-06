@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NameDataServiceClient interface {
-	RegistrarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error)
+	RegistrarJugadas(ctx context.Context, in *JugadaToData, opts ...grpc.CallOption) (*RespuestaJugada, error)
 }
 
 type nameDataServiceClient struct {
@@ -29,7 +29,7 @@ func NewNameDataServiceClient(cc grpc.ClientConnInterface) NameDataServiceClient
 	return &nameDataServiceClient{cc}
 }
 
-func (c *nameDataServiceClient) RegistrarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error) {
+func (c *nameDataServiceClient) RegistrarJugadas(ctx context.Context, in *JugadaToData, opts ...grpc.CallOption) (*RespuestaJugada, error) {
 	out := new(RespuestaJugada)
 	err := c.cc.Invoke(ctx, "/grpc.NameDataService/RegistrarJugadas", in, out, opts...)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *nameDataServiceClient) RegistrarJugadas(ctx context.Context, in *Jugada
 // All implementations must embed UnimplementedNameDataServiceServer
 // for forward compatibility
 type NameDataServiceServer interface {
-	RegistrarJugadas(context.Context, *Jugada) (*RespuestaJugada, error)
+	RegistrarJugadas(context.Context, *JugadaToData) (*RespuestaJugada, error)
 	mustEmbedUnimplementedNameDataServiceServer()
 }
 
@@ -50,7 +50,7 @@ type NameDataServiceServer interface {
 type UnimplementedNameDataServiceServer struct {
 }
 
-func (UnimplementedNameDataServiceServer) RegistrarJugadas(context.Context, *Jugada) (*RespuestaJugada, error) {
+func (UnimplementedNameDataServiceServer) RegistrarJugadas(context.Context, *JugadaToData) (*RespuestaJugada, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegistrarJugadas not implemented")
 }
 func (UnimplementedNameDataServiceServer) mustEmbedUnimplementedNameDataServiceServer() {}
@@ -67,7 +67,7 @@ func RegisterNameDataServiceServer(s grpc.ServiceRegistrar, srv NameDataServiceS
 }
 
 func _NameDataService_RegistrarJugadas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Jugada)
+	in := new(JugadaToData)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func _NameDataService_RegistrarJugadas_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/grpc.NameDataService/RegistrarJugadas",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NameDataServiceServer).RegistrarJugadas(ctx, req.(*Jugada))
+		return srv.(NameDataServiceServer).RegistrarJugadas(ctx, req.(*JugadaToData))
 	}
 	return interceptor(ctx, in, info, handler)
 }

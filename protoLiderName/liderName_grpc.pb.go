@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LiderNameServiceClient interface {
-	EnviarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugadas, error)
+	EnviarJugadas(ctx context.Context, in *JugadaToName, opts ...grpc.CallOption) (*RespuestaJugadas, error)
 }
 
 type liderNameServiceClient struct {
@@ -29,7 +29,7 @@ func NewLiderNameServiceClient(cc grpc.ClientConnInterface) LiderNameServiceClie
 	return &liderNameServiceClient{cc}
 }
 
-func (c *liderNameServiceClient) EnviarJugadas(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugadas, error) {
+func (c *liderNameServiceClient) EnviarJugadas(ctx context.Context, in *JugadaToName, opts ...grpc.CallOption) (*RespuestaJugadas, error) {
 	out := new(RespuestaJugadas)
 	err := c.cc.Invoke(ctx, "/grpc.LiderNameService/EnviarJugadas", in, out, opts...)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *liderNameServiceClient) EnviarJugadas(ctx context.Context, in *Jugada, 
 // All implementations must embed UnimplementedLiderNameServiceServer
 // for forward compatibility
 type LiderNameServiceServer interface {
-	EnviarJugadas(context.Context, *Jugada) (*RespuestaJugadas, error)
+	EnviarJugadas(context.Context, *JugadaToName) (*RespuestaJugadas, error)
 	mustEmbedUnimplementedLiderNameServiceServer()
 }
 
@@ -50,7 +50,7 @@ type LiderNameServiceServer interface {
 type UnimplementedLiderNameServiceServer struct {
 }
 
-func (UnimplementedLiderNameServiceServer) EnviarJugadas(context.Context, *Jugada) (*RespuestaJugadas, error) {
+func (UnimplementedLiderNameServiceServer) EnviarJugadas(context.Context, *JugadaToName) (*RespuestaJugadas, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarJugadas not implemented")
 }
 func (UnimplementedLiderNameServiceServer) mustEmbedUnimplementedLiderNameServiceServer() {}
@@ -67,7 +67,7 @@ func RegisterLiderNameServiceServer(s grpc.ServiceRegistrar, srv LiderNameServic
 }
 
 func _LiderNameService_EnviarJugadas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Jugada)
+	in := new(JugadaToName)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func _LiderNameService_EnviarJugadas_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/grpc.LiderNameService/EnviarJugadas",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LiderNameServiceServer).EnviarJugadas(ctx, req.(*Jugada))
+		return srv.(LiderNameServiceServer).EnviarJugadas(ctx, req.(*JugadaToName))
 	}
 	return interceptor(ctx, in, info, handler)
 }

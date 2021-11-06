@@ -12,7 +12,7 @@ message RespuestaUnirse {
 }
 
 /*ENVIAR JUGADAS*/
-message Jugada {
+message JugadaToLider {
     int32 jugada = 1;
     int32 etapa = 2;
 }
@@ -32,6 +32,6 @@ message RespuestaVerPozo {
 
 service Jugador {
     rpc SolicitarUnirse (Unirse) returns (RespuestaUnirse);
-    rpc EnviarJugada (Jugada) returns (RespuestaJugada);
+    rpc EnviarJugada (JugadaToLider) returns (RespuestaJugada);
     rpc SolicitarVerPozo (VerPozo) returns (RespuestaVerPozo);
 }

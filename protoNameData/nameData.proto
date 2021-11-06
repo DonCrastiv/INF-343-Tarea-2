@@ -5,7 +5,7 @@ option go_package = "https://github.com/DonCrastiv/INF-343/protoNameData";
 
 
 /*REGISTRAR JUGADAS*/
-message Jugada{
+message JugadaToData{
     int32 idJugador = 1;
     int32 jugada = 2;
     int32 etapa = 3;
@@ -17,5 +17,5 @@ message RespuestaJugada {
 }
 
 service NameDataService {
-    rpc RegistrarJugadas (Jugada) returns (RespuestaJugada);
+    rpc RegistrarJugadas (JugadaToData) returns (RespuestaJugada);
 }

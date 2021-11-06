@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JugadorClient interface {
 	SolicitarUnirse(ctx context.Context, in *Unirse, opts ...grpc.CallOption) (*RespuestaUnirse, error)
-	EnviarJugada(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error)
+	EnviarJugada(ctx context.Context, in *JugadaToLider, opts ...grpc.CallOption) (*RespuestaJugada, error)
 	SolicitarVerPozo(ctx context.Context, in *VerPozo, opts ...grpc.CallOption) (*RespuestaVerPozo, error)
 }
 
@@ -40,7 +40,7 @@ func (c *jugadorClient) SolicitarUnirse(ctx context.Context, in *Unirse, opts ..
 	return out, nil
 }
 
-func (c *jugadorClient) EnviarJugada(ctx context.Context, in *Jugada, opts ...grpc.CallOption) (*RespuestaJugada, error) {
+func (c *jugadorClient) EnviarJugada(ctx context.Context, in *JugadaToLider, opts ...grpc.CallOption) (*RespuestaJugada, error) {
 	out := new(RespuestaJugada)
 	err := c.cc.Invoke(ctx, "/grpc.Jugador/EnviarJugada", in, out, opts...)
 	if err != nil {
@@ -63,7 +63,7 @@ func (c *jugadorClient) SolicitarVerPozo(ctx context.Context, in *VerPozo, opts 
 // for forward compatibility
 type JugadorServer interface {
 	SolicitarUnirse(context.Context, *Unirse) (*RespuestaUnirse, error)
-	EnviarJugada(context.Context, *Jugada) (*RespuestaJugada, error)
+	EnviarJugada(context.Context, *JugadaToLider) (*RespuestaJugada, error)
 	SolicitarVerPozo(context.Context, *VerPozo) (*RespuestaVerPozo, error)
 	mustEmbedUnimplementedJugadorServer()
 }
@@ -75,7 +75,7 @@ type UnimplementedJugadorServer struct {
 func (UnimplementedJugadorServer) SolicitarUnirse(context.Context, *Unirse) (*RespuestaUnirse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SolicitarUnirse not implemented")
 }
-func (UnimplementedJugadorServer) EnviarJugada(context.Context, *Jugada) (*RespuestaJugada, error) {
+func (UnimplementedJugadorServer) EnviarJugada(context.Context, *JugadaToLider) (*RespuestaJugada, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarJugada not implemented")
 }
 func (UnimplementedJugadorServer) SolicitarVerPozo(context.Context, *VerPozo) (*RespuestaVerPozo, error) {
@@ -113,7 +113,7 @@ func _Jugador_SolicitarUnirse_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _Jugador_EnviarJugada_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Jugada)
+	in := new(JugadaToLider)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func _Jugador_EnviarJugada_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/grpc.Jugador/EnviarJugada",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JugadorServer).EnviarJugada(ctx, req.(*Jugada))
+		return srv.(JugadorServer).EnviarJugada(ctx, req.(*JugadaToLider))
 	}
 	return interceptor(ctx, in, info, handler)
 }
