@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	port = ":500054"
+	port = ":50054"
 )
 
 var monto int32 = 0

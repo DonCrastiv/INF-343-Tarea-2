@@ -21,7 +21,8 @@ import (
 )
 
 const (
-	address = "localhost:50052"
+	addressNode = "localhost:50052"
+	addressPozo = "localhost:50054"
 	port = ":50051"
 	players = 8
 )
@@ -82,22 +83,21 @@ func UpdatePozo(idJugador int32, etapa int32) {
 
 func (s *server) SolicitarVerPozo (ctx context.Context, in *pbJugador.VerPozo) (*pbJugador.RespuestaVerPozo, error){
 	
-	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial(addressPozo, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
 	}
 	defer conn.Close()
 	c := pbPozo.NewLiderPozoServiceClient(conn)
 	r, err := c.ConsultarPozo(context.Background(), &pbPozo.Request{})
-	monto := r.Monto
 
-	return &pbJugador.RespuestaVerPozo{MontoAcumulado: monto}, nil
+	return &pbJugador.RespuestaVerPozo{MontoAcumulado: r.Monto}, nil
 }
 
 func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	log.Printf("[LRLV] El jugador %d ha sacado un %d", idJugador, jugada)
 	
-	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial(addressNode, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
 	}
@@ -315,6 +315,7 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.JugadaToLider) 
 	}
 	
 	if (eliminado) {
+		UpdatePozo(ipToId[p.Addr], etapa)
 		eliminados[ipToId[p.Addr] - 1] = true
 		log.Printf("Jugador %d Eliminado", ipToId[p.Addr])
 	}
