@@ -43,18 +43,19 @@ func valueInSlice(value int32, list []int32) bool {
 func guardarJugada(idJugador int32, jugada int32, etapa int32) {
 	filename := fmt.Sprintf("dataNode/jugador_%d__etapa_%d.txt", idJugador, etapa)
 	str := fmt.Sprintf("%d\n", jugada)
-	metodo := 0
-	if valueInSlice(idJugador, l_jugadores) == true {
-		metodo = os.O_APPEND
+
+	if valueInSlice(idJugador, l_jugadores) {
+		f, err := os.OpenFile(filename, os.O_APPEND, 0600)
+		check(err)
+		f.WriteString(str)
+		f.Close()
 	} else {
-		metodo = os.O_CREATE
-		l_jugadores = append(l_jugadores, idJugador)
+		f, err := os.Create(filename)
+		check(err)
+		f.WriteString(str)
+		f.Close()
 	}
 
-	f, err := os.OpenFile(filename, metodo, 0600)
-	check(err)
-	f.WriteString(str)
-	f.Close()
 }
 
 func obtenerJugada(idJugador int32, etapa int32) []int32 {
