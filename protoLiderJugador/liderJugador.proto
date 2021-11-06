@@ -9,6 +9,7 @@ message Unirse {
 
 message RespuestaUnirse {
     int32 etapa = 1;
+    int32 idJugador = 2;
 }
 
 /*ENVIAR JUGADAS*/
