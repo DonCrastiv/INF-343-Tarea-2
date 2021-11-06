@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"os"
 	"strconv"
 	"time"
 
@@ -67,7 +66,7 @@ func main() {
 		case 3:
 			jugada = getNumInput("Todo o Nada\nIngrese un número entre el 1 y el 10: ", 1, 10)
 		case 4:
-			os.Exit(0)
+			return
 		}
 		rJ, err = c.EnviarJugada(ctx, &pb.JugadaToLider{Jugada: jugada, Etapa: etapa})
 		if err != nil {

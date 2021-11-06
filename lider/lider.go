@@ -22,7 +22,7 @@ import (
 const (
 	address = "localhost:50052"
 	port = ":50051"
-	players = 2
+	players = 8
 )
 
 type server struct {
@@ -278,14 +278,14 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 	cochinoCandado.Lock()
 	idProcedural++
 	ipToId[p.Addr] = idProcedural
-	log.Printf("A la ip %s se le ha asignado la id %d", p.Addr.String(), idProcedural)
+	log.Printf("A la ip %s se le ha asignado la id %d", p.Addr.String(), ipToId[p.Addr])
 	cochinoCandado.Unlock()
 
-	if idProcedural == players {
+	if ipToId[p.Addr] == players {
 		log.Println("Comienza la ETAPA 1")
 	}
 
-	return &pbJugador.RespuestaUnirse{Etapa: 1, Id: int32(idProcedural)}, nil
+	return &pbJugador.RespuestaUnirse{Etapa: 1, IdJugador: ipToId[p.Addr]}, nil
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.JugadaToLider) (*pbJugador.RespuestaJugada, error) {
