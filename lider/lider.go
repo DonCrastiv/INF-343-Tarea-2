@@ -141,6 +141,10 @@ func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
 			}
 		}
 	}
+	if vivos == 1 {
+		return false, 4
+	}
+	
 	// Eliminamos al jugador al azar si son impares
 	if (vivos%2 != 0) {
 		cochinoCandado.Lock()
