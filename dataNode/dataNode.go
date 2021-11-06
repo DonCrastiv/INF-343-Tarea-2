@@ -23,18 +23,12 @@ type DataNodeServer struct {
 
 func (s *DataNodeServer) RegistrarJugadas(ctx context.Context, in *pb.JugadaToData) (*pb.RespuestaJugada, error) {
 	log.Printf("Input - num: %d | st: %d\n", in.IdJugador, in.Etapa)
-	var pl = JugadaDN{idJugador: in.IdJugador, etapa: in.Etapa}
 	var jgs []int32
-	guardarJugada(pl.idJugador, pl.jugada, pl.etapa)
-	jgs = obtenerJugada(pl.idJugador, pl.etapa)
+	guardarJugada(in.IdJugador, in.Jugada, in.Etapa)
+	jgs = obtenerJugada(in.IdJugador, in.Etapa)
 	return &pb.RespuestaJugada{Jugadas: jgs, Cantidad: int32(len(jgs))}, nil
 }
 
-type JugadaDN struct {
-	idJugador int32
-	jugada    int32
-	etapa     int32
-}
 
 func guardarJugada(idJugador int32, jugada int32, etapa int32) {
 
