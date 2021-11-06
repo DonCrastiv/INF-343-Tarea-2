@@ -22,7 +22,7 @@ import (
 const (
 	address = "localhost:50052"
 	port = ":50051"
-	players = 16
+	players = 2
 )
 
 type server struct {
@@ -79,7 +79,7 @@ func updatePozo(idJugador int32, etapa int32){
 }
 
 func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
-	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
+	log.Printf("[LRLV] El jugador %d ha sacado un %d", idJugador, jugada)
 	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -125,7 +125,7 @@ var jugadasTC [players]int32
 var elegidoTC int32 = 0
 var equipoEliminado int
 func TirarCuerda(idJugador int32, jugada int32) (bool, int32) {
-	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
+	log.Printf("[TlC] El jugador %d ha sacado un %d", idJugador, jugada)
 	jugadasTC[idJugador - 1] = jugada
 	// Esperar a que todos hayan hecho su jugada.
 	// Aprovechamos para contar los jugadores vivos.
@@ -206,7 +206,7 @@ var jugadasTN [players]int32
 var rivalesTN [players]int32
 var elegidoTN int32 = 0
 func TodoNada(idJugador int32, jugada int32) (bool, int32) {
-	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
+	log.Printf("[ToN] El jugador %d ha sacado un %d", idJugador, jugada)
 	jugadasTN[idJugador - 1] = jugada
 	
 	vivos := 0
@@ -269,21 +269,23 @@ func TodoNada(idJugador int32, jugada int32) (bool, int32) {
 	return true, 3
 }
 
-var jugadorId int32 = 0
+var idProcedural int32 = 0
 func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pbJugador.RespuestaUnirse, error) {
 	p, _ := peer.FromContext(ctx)
 	if val, ok := ipToId[p.Addr]; ok {
 		log.Fatalf("%s ya tiene asignada la id %d", p.Addr.String(), val)
 	}
-	jugadorId++
-	ipToId[p.Addr] = jugadorId
-	log.Printf("A la ip %s se le ha asignado la id %d", p.Addr.String(), jugadorId)
+	cochinoCandado.Lock()
+	idProcedural++
+	ipToId[p.Addr] = idProcedural
+	log.Printf("A la ip %s se le ha asignado la id %d", p.Addr.String(), idProcedural)
+	cochinoCandado.Unlock()
 
-	if jugadorId == 16 {
+	if idProcedural == players {
 		log.Println("Comienza la ETAPA 1")
 	}
 
-	return &pbJugador.RespuestaUnirse{Etapa: 1}, nil
+	return &pbJugador.RespuestaUnirse{Etapa: 1, Id: idProcedural}, nil
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.JugadaToLider) (*pbJugador.RespuestaJugada, error) {

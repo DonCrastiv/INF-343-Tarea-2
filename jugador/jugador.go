@@ -23,7 +23,10 @@ func getNumInput(s string, min int, max int) int32 {
 	var input string
 	log.Print(s)
 	fmt.Scanln(&input)
-	v, _ := strconv.Atoi(input)
+	v, err := strconv.Atoi(input)
+	if err != nil {
+		log.Fatalf("Hubo un error al leer la consola: %v", err)
+	}
 	
 	if v < min {
 		return int32(min)
