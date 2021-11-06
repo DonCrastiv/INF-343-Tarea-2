@@ -285,7 +285,7 @@ func (s *server) SolicitarUnirse(ctx context.Context, in *pbJugador.Unirse) (*pb
 		log.Println("Comienza la ETAPA 1")
 	}
 
-	return &pbJugador.RespuestaUnirse{Etapa: 1, Id: idProcedural}, nil
+	return &pbJugador.RespuestaUnirse{Etapa: 1, Id: int32(idProcedural)}, nil
 }
 
 func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.JugadaToLider) (*pbJugador.RespuestaJugada, error) {
