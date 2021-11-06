@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	pbJugador "inf343-tarea-2/protoLiderJugador"
-	//	pbName "inf343-tarea-2/protoLiderName"
+	pbName "inf343-tarea-2/protoLiderName"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
@@ -19,7 +19,7 @@ import (
 const (
 	address = "localhost:50052"
 	port = ":50051"
-	players = 3
+	players = 16
 )
 
 type server struct {
@@ -38,7 +38,7 @@ var ronda [players]int32
 // END PROVISIONAL
 func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	log.Printf("El jugador %d ha sacado un %d", idJugador, jugada)
-	/*
+	
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %v", err)
@@ -59,12 +59,8 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	for _, v := range jugadas {  
 		suma += v  
 	}
-	*/
+	
 	// PROVISIONAL
-	suma[idJugador - 1] += jugada
-	suma := suma[idJugador - 1]
-	ronda[idJugador - 1] += 1
-	ronda := ronda[idJugador - 1]
 	jugadaLider := jugadasLider[ronda - 1]
 	// END PROVISIONAL
 
@@ -277,11 +273,6 @@ func main() {
 		jugadasTC[i] = 0
 		jugadasTN[i] = 0
 		rivalesTN[i] = -1
-
-		// PROVISIONAL
-		suma[i] = 0
-		ronda[i] = 0
-		// END PROVISIONAL
 	}
 	for i := 0; i < 4; i++ {
 		jugadasLider[i] = rand.Int31n(5) + 6
