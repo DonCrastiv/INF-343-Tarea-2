@@ -248,10 +248,10 @@ func (s *server) EnviarJugada(ctx context.Context, in *pbJugador.Jugada) (*pbJug
 	case 1:
 		eliminado, etapa = LuzRojaLuzVerde(ipToId[p.Addr], in.Jugada)
 	case 2:
-		log.Printf("El jugador %d avanza a la ETAPA 2", ipToId[p.Addr])
+		log.Printf("El jugador %d sobrevivió y avanza a la ETAPA 2", ipToId[p.Addr])
 		eliminado, etapa = TirarCuerda(ipToId[p.Addr], in.Jugada)
 	case 3:
-		log.Printf("El jugador %d avanza a la ETAPA 3", ipToId[p.Addr])
+		log.Printf("El jugador %d sobrevivió y avanza a la ETAPA 3", ipToId[p.Addr])
 		eliminado, etapa = TodoNada(ipToId[p.Addr], in.Jugada)
 	}
 	
