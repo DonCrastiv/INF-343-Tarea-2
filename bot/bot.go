@@ -2,8 +2,10 @@ package main
 
 import (
 	"math/rand"
-	"os"
 	"time"
+	"sync"
+	"strconv"
+	"fmt"
 
 	"context"
 	"log"
@@ -17,8 +19,8 @@ const (
 	address = "localhost:50051"
 )
 
-func main() {
-	rand.Seed(time.Now().UnixNano())
+func Jugar(wg *sync.WaitGroup) {
+	defer wg.Done()
 
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -28,10 +30,6 @@ func main() {
 
 	c := pb.NewJugadorClient(conn)
 
-	/*
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	*/
 	ctx := context.Background()
 	rS, err := c.SolicitarUnirse(ctx, &pb.Unirse{})
 	if err != nil {
@@ -40,10 +38,12 @@ func main() {
 	log.Println("Unido exitosamente al Squid Game")
 
 	etapa := rS.GetEtapa()
+	id := rS.GetId()
 	elim := false
 	var rJ *pb.RespuestaJugada
 	var jugada int32
 	for !elim {
+		time.Sleep(500 * time.Millisecond)
 		switch etapa {
 		case 1:
 			jugada = rand.Int31n(10) + 1
@@ -52,7 +52,7 @@ func main() {
 		case 3:
 			jugada = rand.Int31n(10) + 1
 		case 4:
-			os.Exit(0)
+			log.Printf("")
 		}
 		rJ, err = c.EnviarJugada(ctx, &pb.JugadaToLider{Jugada: jugada, Etapa: etapa})
 		if err != nil {
@@ -63,3 +63,29 @@ func main() {
 		log.Printf("Eliminado: %t, Etapa: %d", elim, etapa)
 	}
 }
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	
+	var input string
+	log.Print("Cantidad de Bots a instanciar: ")
+	fmt.Scanln(&input)
+	v, err := strconv.Atoi(input)
+	if err != nil {
+		log.Fatalf("Hubo un error al leer la consola: %v", err)
+	}
+	
+	if v < 1 {
+		v = 1
+	} else if v > 16 {
+		v = 16
+	}
+
+	var wg sync.WaitGroup
+	for i := 0; i < v; i++ {
+		wg.Add(1)
+		go Jugar(&wg)
+	}
+	wg.Wait()
+}
+
