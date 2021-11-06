@@ -62,7 +62,11 @@ func main() {
 		log.Print("¿Desea ver el monto acumulado en el pozo? (y/n)")
 		fmt.Scanln(&verPozo)
 		if verPozo == "y" {
-			// VER POZO ANASHEX
+			rP, err := c.SolicitarVerPozo(ctx, &pb.VerPozo{})
+			if err != nil {
+				log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
+			}
+			log.Printf("El monto acomulado actualmente es: %v", rP.MontoAcumulado)
 		}
 		switch etapa {
 		case 1:
