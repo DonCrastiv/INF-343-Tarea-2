@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"os"
 	"strconv"
 	"time"
 
@@ -59,6 +58,12 @@ func main() {
 	var rJ *pb.RespuestaJugada
 	var jugada int32
 	for !elim {
+		var verPozo string
+		log.Print("¿Desea ver el monto acumulado en el pozo? (y/n)")
+		fmt.Scanln(&verPozo)
+		if verPozo == "y" {
+			// VER POZO ANASHEX
+		}
 		switch etapa {
 		case 1:
 			jugada = getNumInput("Luz Roja, Luz Verde\nIngrese un número entre el 1 y el 10: ", 1, 10)
@@ -67,7 +72,7 @@ func main() {
 		case 3:
 			jugada = getNumInput("Todo o Nada\nIngrese un número entre el 1 y el 10: ", 1, 10)
 		case 4:
-			os.Exit(0)
+			return
 		}
 		rJ, err = c.EnviarJugada(ctx, &pb.JugadaToLider{Jugada: jugada, Etapa: etapa})
 		if err != nil {

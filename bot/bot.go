@@ -35,7 +35,7 @@ func Jugar(wg *sync.WaitGroup) {
 	if err != nil {
 		log.Fatalf("Hubo un error con el envío o proceso de la solicitud: %v", err)
 	}
-	Id := rS.GetId()
+	Id := rS.GetIdJugador()
 	log.Printf("[%d] Unido exitosamente al Squid Game", Id)
 
 	etapa := rS.GetEtapa()
@@ -52,7 +52,7 @@ func Jugar(wg *sync.WaitGroup) {
 		case 3:
 			jugada = rand.Int31n(10) + 1
 		case 4:
-			log.Printf("")
+			return
 		}
 		rJ, err = c.EnviarJugada(ctx, &pb.JugadaToLider{Jugada: jugada, Etapa: etapa})
 		if err != nil {
