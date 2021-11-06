@@ -50,6 +50,7 @@ func guardarJugada(idJugador int32, jugada int32, etapa int32) {
 		f.WriteString(str)
 		f.Close()
 	} else {
+		l_jugadores = append(l_jugadores, idJugador)
 		f, err := os.Create(filename)
 		check(err)
 		f.WriteString(str)
