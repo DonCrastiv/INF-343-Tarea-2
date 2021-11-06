@@ -17,6 +17,8 @@ const (
 	port = ":50053"
 )
 
+var l_jugadores []int32
+
 type DataNodeServer struct {
 	pb.UnimplementedNameDataServiceServer
 }
@@ -29,21 +31,34 @@ func (s *DataNodeServer) RegistrarJugadas(ctx context.Context, in *pb.JugadaToDa
 	return &pb.RespuestaJugada{Jugadas: jgs, Cantidad: int32(len(jgs))}, nil
 }
 
+func valueInSlice(value int32, list []int32) bool {
+	for _, b := range list {
+		if b == value {
+			return true
+		}
+	}
+	return false
+}
 
 func guardarJugada(idJugador int32, jugada int32, etapa int32) {
-
-	filename := fmt.Sprintf("jugador_%d__etapa_%d.txt", idJugador, etapa)
+	filename := fmt.Sprintf("dataNode/jugador_%d__etapa_%d.txt", idJugador, etapa)
 	str := fmt.Sprintf("%d\n", jugada)
-	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0600)
+	metodo := 0
+	if valueInSlice(idJugador, l_jugadores) == true {
+		metodo = os.O_APPEND
+	} else {
+		metodo = os.O_CREATE
+		l_jugadores = append(l_jugadores, idJugador)
+	}
+
+	f, err := os.OpenFile(filename, metodo, 0600)
 	check(err)
-
 	f.WriteString(str)
-
 	f.Close()
 }
 
 func obtenerJugada(idJugador int32, etapa int32) []int32 {
-	filename := fmt.Sprintf("jugador_%d__etapa_%d.txt", idJugador, etapa)
+	filename := fmt.Sprintf("dataNode/jugador_%d__etapa_%d.txt", idJugador, etapa)
 
 	file, err := os.Open(filename)
 	check(err)
