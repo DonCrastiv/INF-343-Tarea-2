@@ -5,17 +5,20 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
+	"math/rand"
 	"net"
+	"os"
 
-	pbNameData "inf343-tarea-2/protoNameData"
 	pbLiderName "inf343-tarea-2/protoLiderName"
+	pbNameData "inf343-tarea-2/protoNameData"
 
 	"google.golang.org/grpc"
 )
 
+var adress = [...]string{"localhost:50061", "localhost:50062", "localhost:50063"}
+var count = 0
+
 const (
-	adress = "localhost:50053"
 	port = ":50052"
 )
 
@@ -23,26 +26,17 @@ type server struct {
 	pbLiderName.UnimplementedLiderNameServiceServer
 }
 
-type nameNodeData struct {
-	playerNumber int
-	playerStage  int
-	ip           string
-}
-
-func (p *nameNodeData) savePlayerData() {
-	filename := "nameNodeDataLocation.txt"
-
-	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0600)
-
-	check(err)
-	fmt.Fprintf(f, "Jugador_%d Ronda_%d 10.0.1.10\n", p.playerNumber, p.playerStage)
-	f.Close()
-}
-
 func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName) (*pbLiderName.RespuestaJugadas, error) {
 	log.Printf("Recibido: %d %d %d", in.IdJugador, in.Etapa, in.Jugada)
-	
-	conn, err := grpc.Dial(adress, grpc.WithInsecure(), grpc.WithBlock())
+	str := getStoredIP(in.IdJugador, in.Etapa)
+	var dirDN string
+	if str == "" {
+		dirDN = adress[rand.Intn(2)]
+		savePlayerData(in.IdJugador, in.Etapa, str)
+	} else {
+		dirDN = str
+	}
+	conn, err := grpc.Dial(dirDN, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect\n")
 	}
@@ -52,8 +46,22 @@ func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName
 	return &pbLiderName.RespuestaJugadas{Jugadas: r.Jugadas, Cantidad: r.Cantidad}, nil
 }
 
-func (p *nameNodeData) getStoredIP() {
-	filename := "nameNodeDataLocation.txt"
+func savePlayerData(IdJugador int32, Etapa int32, addr string) {
+	filename := "nameNode/DataLocation.txt"
+	if count == 0 {
+		f, err := os.Create(filename)
+		check(err)
+		f.Close()
+		count = 1
+	}
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0600)
+	check(err)
+	fmt.Fprintf(f, "Jugador_%d Ronda_%d %s\n", IdJugador, Etapa, addr)
+	f.Close()
+}
+
+func getStoredIP(IdJugador int32, Etapa int32) string {
+	filename := "nameNode/DataLocation.txt"
 
 	file, err := os.Open(filename)
 	check(err)
@@ -67,11 +75,11 @@ func (p *nameNodeData) getStoredIP() {
 		var pl, st int
 		fmt.Sscanf(str, "Jugador_%d Ronda_%d %s", &pl, &st, &ip)
 
-		if pl == p.playerNumber && st == p.playerStage {
-			p.ip = ip
-			break
+		if pl == int(IdJugador) && st == int(Etapa) {
+			return str
 		}
 	}
+	return ""
 }
 
 func check(err error) {
