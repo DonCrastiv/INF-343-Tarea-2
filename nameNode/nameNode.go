@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var adress = [...]string{"localhost:50061", "localhost:50062", "localhost:50063"}
+var adress = [...]string{"dist14:50061", "dist14:50062", "dist14:50063"}
 var count = 0
 
 const (

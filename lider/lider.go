@@ -21,10 +21,10 @@ import (
 )
 
 const (
-	addressNode = "localhost:50052"
-	addressPozo = "localhost:50054"
+	addressNode = "dist13:50052"
+	addressPozo = "dist13:50054"
 	port = ":50051"
-	players = 8
+	players = 16
 )
 
 type server struct {
