@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	addressNode = "dist13:50052"
-	addressPozo = "dist13:50054"
+	addressNode = "dist14:50052"
+	addressPozo = "dist16:50054"
 	port = ":50051"
 	players = 16
 )
