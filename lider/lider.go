@@ -125,7 +125,7 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 	log.Printf("Jugador %d: %d, Lider: %d, Suma jugador %d: %d", idJugador, jugada, jugadasLider[ronda - 1], idJugador, suma)
 	
 	var etapa int32 = 1
-	if suma >= 21 {	
+	if suma >= 21 && !eliminado{
 		etapa = 2
 	} else if ronda == 4 {
 		eliminado = true
