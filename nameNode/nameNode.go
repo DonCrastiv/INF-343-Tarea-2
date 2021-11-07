@@ -28,6 +28,15 @@ type server struct {
 
 func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName) (*pbLiderName.RespuestaJugadas, error) {
 	log.Printf("Recibido: %d %d %d", in.IdJugador, in.Etapa, in.Jugada)
+
+	filename := "nameNode/DataLocation.txt"
+	if count == 0 {
+		f, err := os.Create(filename)
+		check(err)
+		f.Close()
+		count = 1
+	}
+
 	str := getStoredIP(in.IdJugador, in.Etapa)
 	var dirDN string
 	if str == "" {
@@ -48,12 +57,6 @@ func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName
 
 func savePlayerData(IdJugador int32, Etapa int32, addr string) {
 	filename := "nameNode/DataLocation.txt"
-	if count == 0 {
-		f, err := os.Create(filename)
-		check(err)
-		f.Close()
-		count = 1
-	}
 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0600)
 	check(err)
 	fmt.Fprintf(f, "Jugador_%d Ronda_%d %s\n", IdJugador, Etapa, addr)
