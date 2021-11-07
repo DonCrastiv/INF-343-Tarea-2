@@ -76,7 +76,7 @@ func getStoredIP(IdJugador int32, Etapa int32) string {
 		fmt.Sscanf(str, "Jugador_%d Ronda_%d %s", &pl, &st, &ip)
 
 		if pl == int(IdJugador) && st == int(Etapa) {
-			return str
+			return ip
 		}
 	}
 	return ""
