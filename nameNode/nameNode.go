@@ -31,7 +31,7 @@ func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName
 	str := getStoredIP(in.IdJugador, in.Etapa)
 	var dirDN string
 	if str == "" {
-		dirDN = adress[rand.Intn(2)]
+		dirDN = adress[rand.Intn(3)]
 		savePlayerData(in.IdJugador, in.Etapa, dirDN)
 	} else {
 		dirDN = str
