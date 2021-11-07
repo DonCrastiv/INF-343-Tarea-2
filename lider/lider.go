@@ -106,7 +106,7 @@ func LuzRojaLuzVerde(idJugador int32, jugada int32) (bool, int32) {
 		log.Fatalf("No se pudo conectar: %v", err)
 	}
 	defer conn.Close()
-	
+	log.Printf("[POST DIAL] jugador %v", idJugador)
 	c := pbName.NewLiderNameServiceClient(conn)
 	r, err := c.EnviarJugadas(context.Background(), &pbName.JugadaToName{IdJugador: idJugador, Jugada: jugada, Etapa: 1})
 	if err != nil {
