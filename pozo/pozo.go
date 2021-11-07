@@ -59,7 +59,7 @@ func main() {
 	go ConexionGRPC()
 
 
-	conn, err := amqp.Dial("amqp://guest:guest@dist16:5672/")
+	conn, err := amqp.Dial("amqp://test:test@dist16:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
