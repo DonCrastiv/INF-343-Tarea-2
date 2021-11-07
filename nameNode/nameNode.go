@@ -32,7 +32,7 @@ func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName
 	var dirDN string
 	if str == "" {
 		dirDN = adress[rand.Intn(2)]
-		savePlayerData(in.IdJugador, in.Etapa, str)
+		savePlayerData(in.IdJugador, in.Etapa, dirDN)
 	} else {
 		dirDN = str
 	}
