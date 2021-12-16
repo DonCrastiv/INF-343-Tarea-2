@@ -45,7 +45,7 @@ func guardarJugada(idJugador int32, jugada int32, etapa int32) {
 	str := fmt.Sprintf("%d\n", jugada)
 
 	if valueInSlice(idJugador, l_jugadores) {
-		f, err := os.OpenFile(filename, os.O_APPEND, 0600)
+		f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		check(err)
 		f.WriteString(str)
 		f.Close()

@@ -57,7 +57,7 @@ func (s *server) EnviarJugadas(ctx context.Context, in *pbLiderName.JugadaToName
 
 func savePlayerData(IdJugador int32, Etapa int32, addr string) {
 	filename := "nameNode/DataLocation.txt"
-	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE, 0600)
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	check(err)
 	fmt.Fprintf(f, "Jugador_%d Ronda_%d %s\n", IdJugador, Etapa, addr)
 	f.Close()
