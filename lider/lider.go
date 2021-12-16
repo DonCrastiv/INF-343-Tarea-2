@@ -42,7 +42,7 @@ var iterador [players]int32
 func UpdatePozo(idJugador int32, etapa int32) {
 
 	log.Printf("[POZO] El jugador %d:", idJugador)
-	conn, err := amqp.Dial("amqp://test:test@localhost:5672/qa1")
+	conn, err := amqp.Dial("amqp://test:test@dist16:5672/qa1")
 	if err != nil {
 		log.Fatalf("%s: %s", "Failed to connect to RabbitMQ", err)
 	}
